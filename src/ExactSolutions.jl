@@ -15,6 +15,9 @@ export Stokes2D_Schmid2003
 include("Stokes2D/Stokes2D_SolKz_Zhong1996.jl")
 export Stokes2D_SolKz_Zhong1996
 
+include("Stokes2D/Stokes2D_SolCx_Zhong1996.jl")
+export Stokes2D_SolCx_Zhong1996
+
 include("Elasticity2D/Elasticity2D_Hole.jl")
 export Elasticity2D_Hole
 
