@@ -17,7 +17,7 @@ and returns:
 
 # Examples
 ```julia-repl
-julia>  Poisson2D_Sevilla2018( [0, 0] )
+julia> Poisson2D_Sevilla2018( [0, 0] )
 (u = 1.3498588075760032, ∇u = [0.6884279918637617, -0.8369124606971221], s = 11.298993148814933)
 ```
 """

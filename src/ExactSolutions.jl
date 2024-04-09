@@ -9,4 +9,7 @@ export Poisson2D_Sevilla2018
 include("Stokes2D/Stokes2D_Schmid2003.jl")
 export Stokes2D_Schmid2003
 
+include("Elasticity2D/Elasticity2D_Hole.jl")
+export Elasticity2D_Hole
+
 end # module ExactSolutions
