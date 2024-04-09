@@ -8,7 +8,7 @@
 
 ![alt text](img/Stokes2D_Schmid2003.svg "Schmid & Podladchikov (2003)")
 
-# Elasticty 2D
+# Elasticity 2D
 [Elastic plate with a hole](examples/Visualize_Elasticity2D_Hole.jl)
 
 ![alt text](img/Elasticity2D_Hole.svg "Elastic plate with a hole")
