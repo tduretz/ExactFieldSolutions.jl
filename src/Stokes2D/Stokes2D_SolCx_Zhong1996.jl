@@ -1,10 +1,35 @@
-Stokes2D_solCx_solution(x, z, params) = Stokes2D_solCx_solution(x, z, params.ηA, params.ηB)
+@doc raw"""
+    sol = Stokes2D_SolCx_Zhong1996(x; params)  
+
+    Evaluates the manufactured solution of [Zhong et al., (1996)](https://booksite.elsevier.com/brochures/geophysics/PDFs/00118.pdf). 
+    Analytical solution adapted from Underworld (https://github.com/underworldcode, LGPL-3 license).
+    The solution requires the following expressions the density and viscosity fields: 
+    ρ = -σ*sin(km*x[2])*cos(kn*x[1]) 
+    η = exp(2*B*x[2])
+    
+    Input parameters are:
+    x      : is the coordinate vector 
+    params : optional parameter array
+and returns:
+
+    sol    : tuple containing the solution fields p (pressure) and V (velocity vector)
+
+# Examples
+```julia-repl
+julia> Stokes2D_SolCx_Zhong1996( [0; 0] )
+(V = [0.0, 0.0], p = -0.18450665902742763)
+```
+"""
+function Stokes2D_SolCx_Zhong1996(x; params=(; ηA=1, ηB=2))
+    sol = SolCx_solution(x[1], x[2], params.ηA, params.ηB)
+    return sol
+end
 
 #=
 Analytical solution adapted from Underworld (https://github.com/underworldcode). As stated in the Underworld repository, 
 the code is released under the  GNU LESSER GENERAL PUBLIC LICENSE (LGPL-3) license
 =#    
-function Stokes2D_solCx_solution(x, z, ηA, ηB)
+function SolCx_solution(x, z, ηA, ηB)
     n, nx = 1, 1
 
     ZA = ηA # left column viscosity 
@@ -3633,7 +3658,6 @@ function Stokes2D_solCx_solution(x, z, ηA, ηB)
         (0.4e1 * t24 * t15 + 0.8e1 * t127 * t15 * t18 + 0.4e1 * t131 * t15 * t19)
 
     u5 = (-2 * Z * n * π * u2 - u3 * 2 * n * π) * cos(n * π * z) # pressure 
-
     u6 = (u3 * 2 * n * π + 4 * Z * n * π * u2) * cos(n * π * z) # zz stress 
     sum5 = u5
     sum6 = u6
@@ -3649,7 +3673,7 @@ function Stokes2D_solCx_solution(x, z, ηA, ηB)
 
     vx = sum1
     vz = sum2
-    P = sum5
+    p = sum5
 
-    return vx, vz, P
+    return (;  V=[vx, vz], p)
 end

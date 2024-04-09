@@ -17,6 +17,11 @@
 
 ![alt text](img/Stokes2D_SolKz_Zhong1996.svg "Zhong et al. (1996)")
 
+
+[SolCx - Zhong et al. (1996)](examples/Visualize_Stokes2D_SolCx_Zhong1996.jl)
+
+![alt text](img/Stokes2D_SolCx_Zhong1996.svg "Zhong et al. (1996)")
+
 # Elasticity 2D
 [Elastic plate with a hole](examples/Visualize_Elasticity2D_Hole.jl)
 
