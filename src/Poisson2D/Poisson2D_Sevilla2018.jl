@@ -27,15 +27,16 @@ function Poisson2D_Sevilla2018(x;
     f_cl   = x -> Poisson2D_Sevilla2018_u_fwd(x, params)
     gradu  = ForwardDiff.gradient(f_cl, x)
     hessu  = ForwardDiff.hessian(f_cl, x)
-    s      = -(hessu[1,1] + hessu[2,2])
-    # T = u
-    # @unpack α, β, a, b, c, d = params
-    # s = T*(-a*α*cos(a*x[1] + c*x[2]) + b*β*sin(b*x[1] + d*x[2]))*(a*α*cos(a*x[1] + c*x[2]) - b*β*sin(b*x[1] + d*x[2])) + T*(a^2*α*sin(a*x[1] + c*x[2]) + b^2*β*cos(b*x[1] + d*x[2])) + T*(-α*c*cos(a*x[1] + c*x[2]) + β*d*sin(b*x[1] + d*x[2]))*(α*c*cos(a*x[1] + c*x[2]) - β*d*sin(b*x[1] + d*x[2])) + T*(α*c^2*sin(a*x[1] + c*x[2]) + β*d^2*cos(b*x[1] + d*x[2]))
+     s1      = -(hessu[1,1] + hessu[2,2])
+    T = u
+    @unpack α, β, a, b, c, d = params
+    s = T*(-a*α*cos(a*x[1] + c*x[2]) + b*β*sin(b*x[1] + d*x[2]))*(a*α*cos(a*x[1] + c*x[2]) - b*β*sin(b*x[1] + d*x[2])) + T*(a^2*α*sin(a*x[1] + c*x[2]) + b^2*β*cos(b*x[1] + d*x[2])) + T*(-α*c*cos(a*x[1] + c*x[2]) + β*d*sin(b*x[1] + d*x[2]))*(α*c*cos(a*x[1] + c*x[2]) - β*d*sin(b*x[1] + d*x[2])) + T*(α*c^2*sin(a*x[1] + c*x[2]) + β*d^2*cos(b*x[1] + d*x[2]))
+    @show s, s1
     return (u=u, ∇u=gradu, s=s)
 end
 
 # I've tried to use Enzyme BUT:
-# 1) outputs are difficult gradient components end nest in complicated data structures (arrays of arrays or tuples of arrays)
+# 1) outputs are difficult gradient components end nested in complicated data structures (arrays of arrays or tuples of arrays)
 # 2) never managed to compute higher order derivatives
 # 3) overall package compilation seemed much slower than with ForwardDiff
 

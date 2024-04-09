@@ -12,7 +12,7 @@ export Poisson3D_Sevilla2018
 include("Stokes2D/Stokes2D_Schmid2003.jl")
 export Stokes2D_Schmid2003
 
-include("Stokes2D/Stokes2D_ SolKz_Zhong1996.jl")
+include("Stokes2D/Stokes2D_SolKz_Zhong1996.jl")
 export Stokes2D_SolKz_Zhong1996
 
 include("Elasticity2D/Elasticity2D_Hole.jl")
