@@ -4,8 +4,12 @@
     Evaluates the manufactured solution of [Zhong et al., (1996)](https://booksite.elsevier.com/brochures/geophysics/PDFs/00118.pdf). 
     Analytical solution adapted from Underworld (https://github.com/underworldcode, LGPL-3 license).
     The solution requires the following expressions the density and viscosity fields: 
-    ρ = -σ*sin(km*x[2])*cos(kn*x[1]) 
-    η = exp(2*B*x[2])
+    ρ = sin(π * x[2]) * cos(π * x[1]) 
+    η = if 0 ≤ x ≤ 0.5
+        A
+    elseif 0.5 < x ≤ 1
+        B
+    end
     
     Input parameters are:
     x      : is the coordinate vector 
