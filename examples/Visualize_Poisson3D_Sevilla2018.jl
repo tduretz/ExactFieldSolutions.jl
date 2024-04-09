@@ -22,6 +22,7 @@ function main()
         s[i,j,k]    = sol.s
         ∂u∂x[i,j,k] = sol.∇u[1]
         ∂u∂y[i,j,k] = sol.∇u[2]
+        ∂u∂z[i,j,k] = sol.∇u[3]
     end
     
     # Visualise
