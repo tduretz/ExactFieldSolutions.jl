@@ -9,6 +9,9 @@ export Poisson2D_Sevilla2018
 include("Poisson3D/Poisson3D_Sevilla2018.jl")
 export Poisson3D_Sevilla2018
 
+include("Stokes2D/Stokes2D_Donea2003.jl")
+export Stokes2D_Donea2003
+
 include("Stokes2D/Stokes2D_Schmid2003.jl")
 export Stokes2D_Schmid2003
 
