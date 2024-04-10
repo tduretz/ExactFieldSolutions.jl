@@ -23,7 +23,6 @@ function main()
         ∂u∂x[i,j] = sol.∇u[1]
         ∂u∂y[i,j] = sol.∇u[2]
     end
-    @show s[1,1], s[end,end]
     
     # Visualise
     p1 = heatmap(x, y, u',    aspect_ratio=1, xlims=(0,1), color=:jet, title="u")
