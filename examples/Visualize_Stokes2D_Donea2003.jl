@@ -25,9 +25,9 @@ function main()
     # Visualise
     p1 = heatmap(x, y, p',    aspect_ratio=1, xlims=(-0,1), color=:jet, title="p")
     p2 = heatmap(x, y, ε̇II',  aspect_ratio=1, xlims=(-0,1), color=:jet, title="ε̇II")
-    p4 = heatmap(x, y, Vy',   aspect_ratio=1, xlims=(-0,1), color=:jet, title="Vy")
-    p3 = heatmap(x, y, Vx',   aspect_ratio=1, xlims=(-0,1), color=:jet, title="Vx")
-    display( plot(p1,p2,p3,p4, layout=(2,2)) ) 
+    p3 = heatmap(x, y, sqrt.(Vx.^2 .+ Vy.^2)',   aspect_ratio=1, xlims=(-0,1), color=:jet, title="|V|")
+    # p3 = heatmap(x, y, Vx',   aspect_ratio=1, xlims=(-0,1), color=:jet, title="Vx")
+    display( plot(p1,p2,p3, layout=(2,2)) ) 
  
 end
 

@@ -9,9 +9,13 @@
 ![alt text](img/Poisson3D_Sevilla2018.svg "Sevilla et al. (2018)")
 
 # Stokes 2D
-[Viscous inclusion - Schmid & Podladchikov (2003)](examples/Visualize_Stokes2D_Schmid03.jl)
+[Viscous inclusion - Schmid & Podladchikov (2003)](examples/Visualize_Stokes2D_Schmid2003.jl)
 
 ![alt text](img/Stokes2D_Schmid2003.svg "Schmid & Podladchikov (2003)")
+
+[Donea & Huerta (2003)](examples/Visualize_Stokes2D_Donea2003.jl)
+
+![alt text](img/Stokes2D_Donea2003.svg "Donea & Huerta (2003)")
 
 [SolKz - Zhong et al. (1996)](examples/Visualize_Stokes2D_SolKz_Zhong1996.jl)
 
