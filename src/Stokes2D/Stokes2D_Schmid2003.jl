@@ -85,5 +85,5 @@ function Stokes2D_Schmid2003(x;
     # Check position
     (x[1]^2 + x[2]^2) < params.rc^2 ? η=params.mc : η=params.mm
     τ = 2*η*ε̇
-    return (p=p, V=v, L=L, ε̇=ε̇, τ=τ)
+    return (p=p, V=v, L=L, ε̇=ε̇, τ=τ, η=η)
 end
