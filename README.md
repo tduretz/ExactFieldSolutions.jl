@@ -13,6 +13,10 @@
 
 ![alt text](img/Stokes2D_Schmid2003.svg "Schmid & Podladchikov (2003)")
 
+[Double corner flow - Moulas et al., (2021)](examples/Visualize_Stokes2D_Moulas2021.jl)
+
+![alt text](img/Stokes2D_Moulas2021.svg "Moulas et al. (2021)")
+
 [Donea & Huerta (2003)](examples/Visualize_Stokes2D_Donea2003.jl)
 
 ![alt text](img/Stokes2D_Donea2003.svg "Donea & Huerta (2003)")

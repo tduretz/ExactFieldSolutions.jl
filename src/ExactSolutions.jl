@@ -1,6 +1,6 @@
 module ExactSolutions
 
-using Plots, SpecialFunctions, ForwardDiff, UnPack
+using Plots, SpecialFunctions, ForwardDiff, UnPack, StaticArrays
 
 include("Poisson2D/Poisson2D_Sevilla2018.jl")
 # export Poisson2D_Sevilla2018_enz
@@ -14,6 +14,9 @@ export Stokes2D_Donea2003
 
 include("Stokes2D/Stokes2D_Schmid2003.jl")
 export Stokes2D_Schmid2003
+
+include("Stokes2D/Stokes2D_Moulas2021.jl")
+export Stokes2D_Moulas2021
 
 include("Stokes2D/Stokes2D_SolKz_Zhong1996.jl")
 export Stokes2D_SolKz_Zhong1996

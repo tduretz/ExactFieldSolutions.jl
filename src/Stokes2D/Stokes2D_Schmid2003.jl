@@ -59,7 +59,7 @@ end
 @doc raw"""
     sol = Stokes2D_Schmid2003(x; params)  
 
-Evaluates the manufactured solution of [Schmid & Podladchikov (2003)](https://academic.oup.com/gji/article/155/1/269/713923):
+Evaluates the analytical solution of [Schmid & Podladchikov (2003)](https://academic.oup.com/gji/article/155/1/269/713923):
 
     x      : is the coordinate vector 
     params : optional parameter array
