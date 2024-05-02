@@ -1,4 +1,4 @@
-using ExactSolutions, Plots
+using ExactFieldSolutions, Plots
 
 function main()
 

@@ -1,4 +1,4 @@
-module ExactSolutions
+module ExactFieldSolutions
 
 using Plots, SpecialFunctions, ForwardDiff, UnPack, StaticArrays
 
@@ -27,4 +27,4 @@ export Stokes2D_SolCx_Zhong1996
 include("Elasticity2D/Elasticity2D_Hole.jl")
 export Elasticity2D_Hole
 
-end # module ExactSolutions
+end # module ExactFieldSolutions

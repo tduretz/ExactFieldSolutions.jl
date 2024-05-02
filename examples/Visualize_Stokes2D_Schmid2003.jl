@@ -1,4 +1,4 @@
-using ExactSolutions, Plots
+using ExactFieldSolutions, Plots
 
 function main()
 
@@ -25,8 +25,8 @@ function main()
     # Visualise
     p1 = heatmap(x, y, p',    aspect_ratio=1, xlims=(-0.5,0.5), color=:jet, title="p")
     p2 = heatmap(x, y, ε̇II',  aspect_ratio=1, xlims=(-0.5,0.5), color=:jet, title="ε̇II")
-    p3 = heatmap(x, y, Vx', aspect_ratio=1, xlims=(-0.5,0.5), color=:jet, title="Vx")
-    p4 = heatmap(x, y, Vy', aspect_ratio=1, xlims=(-0.5,0.5), color=:jet, title="Vy")
+    p3 = heatmap(x, y, Vx',   aspect_ratio=1, xlims=(-0.5,0.5), color=:jet, title="Vx")
+    p4 = heatmap(x, y, Vy',   aspect_ratio=1, xlims=(-0.5,0.5), color=:jet, title="Vy")
     display( plot(p1,p2,p3,p4, layout=(2,2)) ) 
  
 end
