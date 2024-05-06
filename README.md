@@ -1,3 +1,5 @@
+## ExactFieldSolutions.jl
+
 Full field solutions are essential for the verification of numerical codes that are based on the solution of Partial Differential Equations (PDE).
 They allow to check if numerical solutions are meaningful in eyeball norm but, more importantly, they allow to quantify discretisation errors.
 This quantification further enables to check whether numerical solutions converge to exact solutions at expected theoretical rates.
@@ -8,17 +10,17 @@ Contributions are welcome and full field solutions to other problems (electric, 
 
 Please note that `ExactFieldSolutions` is a registered package, so you can install it simply by typing `add ExactFieldSolutions` in package mode.
 
-# Poisson 2D
+### Poisson 2D
 [Sevilla et al. (2018)](examples/Visualize_Poisson2D_Sevilla2018.jl)
 
 ![alt text](img/Poisson2D_Sevilla2018.svg "Sevilla et al. (2018)")
 
-# Poisson 3D
+### Poisson 3D
 [Sevilla et al. (2018)](examples/Visualize_Poisson3D_Sevilla2018.jl)
 
 ![alt text](img/Poisson3D_Sevilla2018.svg "Sevilla et al. (2018)")
 
-# Stokes 2D
+### Stokes 2D
 [Viscous inclusion - Schmid & Podladchikov (2003)](examples/Visualize_Stokes2D_Schmid2003.jl)
 
 ![alt text](img/Stokes2D_Schmid2003.svg "Schmid & Podladchikov (2003)")
@@ -40,7 +42,7 @@ Please note that `ExactFieldSolutions` is a registered package, so you can insta
 
 ![alt text](img/Stokes2D_SolCx_Zhong1996.svg "Zhong et al. (1996)")
 
-# Elasticity 2D
+### Elasticity 2D
 [Elastic plate with a hole](examples/Visualize_Elasticity2D_Hole.jl)
 
 ![alt text](img/Elasticity2D_Hole.svg "Elastic plate with a hole")
