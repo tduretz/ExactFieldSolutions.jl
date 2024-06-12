@@ -2,6 +2,9 @@ module ExactFieldSolutions
 
 using Plots, SpecialFunctions, ForwardDiff, UnPack, StaticArrays
 
+include("Diffusion1D/Diffusion1D_Gaussian.jl")
+export Diffusion1D_Gaussian
+
 include("Diffusion2D/Diffusion2D_Gaussian.jl")
 export Diffusion2D_Gaussian
 
