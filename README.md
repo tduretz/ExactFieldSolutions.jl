@@ -20,11 +20,15 @@ Please note that `ExactFieldSolutions` is a registered package, so you can insta
 
 ![alt text](img/Poisson3D_Sevilla2018.svg "Sevilla et al. (2018)")
 
+### Diffusion 1D
+[Diffusion of a 1D Gaussian](examples/Visualize_Diffusion1D_Gaussian.jl)
+
+![alt text](img/Diffusion1D_Gaussian.svg)
+
 ### Diffusion 2D
 [Diffusion of a 2D Gaussian](examples/Visualize_Diffusion2D_Gaussian.jl)
 
 ![alt text](img/Diffusion2D_Gaussian.svg)
-
 
 ### Stokes 2D
 [Viscous inclusion - Schmid & Podladchikov (2003)](examples/Visualize_Stokes2D_Schmid2003.jl)

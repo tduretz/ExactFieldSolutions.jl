@@ -1,4 +1,5 @@
 using ExactFieldSolutions, Plots, Printf
+import LinearAlgebra: norm
 
 function main()
 
@@ -25,6 +26,7 @@ function main()
             ∂u∂x[it,i,j] = sol.∇u[1]
             ∂u∂y[it,i,j] = sol.∇u[2]
         end
+        @printf("Net source term should be 0.0: norm(s) = %1.2e\n", norm(s[it,:,:]))
     end
     
     # Visualise
