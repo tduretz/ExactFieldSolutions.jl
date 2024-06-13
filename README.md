@@ -1,7 +1,7 @@
 ## ExactFieldSolutions.jl
 
 Full field solutions are essential for the verification of numerical codes that are based on the solution of Partial Differential Equations (PDE).
-They allow to check if numerical solutions are meaningful in eyeball norm but, more importantly, they allow to quantify discretisation errors.
+They allow for checking if numerical solutions are meaningful in eyeball norm but, more importantly, they allow for the quantification of discretisation errors.
 This quantification further enables to check whether numerical solutions converge to exact solutions at expected theoretical rates.
 `ExactFieldSolutions` compiles full field solutions for 1D, 2D and 3D PDE problems including Poisson-type and mechanical problems (Stokes, elasticity).
 Contributions are welcome and full field solutions to other problems (electric, magnetic, MHD) are more than welcome. Feel free to make a PR.

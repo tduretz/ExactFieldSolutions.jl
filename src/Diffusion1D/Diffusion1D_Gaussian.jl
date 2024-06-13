@@ -10,7 +10,7 @@ end
 Evaluates the manufactured solution of an initial 2D Gaussian anomaly:
 
     x      : is the coordinate and time vector, x[1] is space and x[2] is time 
-    params : optional parameter array
+    params : optional parameter array, default: (T0 = 100., K = 1e-6, σ = 0.1 ) 
 and returns:
 
     sol    : tuple containing the solution fields u, ∇u and the source term s = -Δu 
@@ -19,6 +19,13 @@ and returns:
 ```julia-repl
 julia> Diffusion1D_Gaussian([0 0])
 (u = 100.0, ∇u = [0.0 0.0 -0.06283185307179585], s = 0.0)
+```
+
+```julia-repl
+julia> params = (T0 = 1., K = 1.0, σ = 0.1 ) 
+(T0 = 1.0, K = 1.0, σ = 0.1)
+julia> Diffusion1D_Gaussian([0 0])
+(u = 1.0, ∇u = [0.0 -99.99999999999999], s = 0.0)
 ```
 """
 function Diffusion1D_Gaussian(x;
