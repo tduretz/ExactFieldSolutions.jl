@@ -11,48 +11,55 @@ Contributions are welcome and full field solutions to other problems (electric, 
 Please note that `ExactFieldSolutions` is a registered package, so you can install it simply by typing `add ExactFieldSolutions` in package mode.
 
 ### Poisson 2D
-[Sevilla et al. (2018)](examples/Visualize_Poisson2D_Sevilla2018.jl)
+[Sevilla et al. (2018)](examples/visualisations/Visualize_Poisson2D_Sevilla2018.jl)
 
 ![alt text](img/Poisson2D_Sevilla2018.svg "Sevilla et al. (2018)")
 
 ### Poisson 3D
-[Sevilla et al. (2018)](examples/Visualize_Poisson3D_Sevilla2018.jl)
+[Sevilla et al. (2018)](examples/visualisations/Visualize_Poisson3D_Sevilla2018.jl)
 
 ![alt text](img/Poisson3D_Sevilla2018.svg "Sevilla et al. (2018)")
 
 ### Diffusion 1D
-[Diffusion of a 1D Gaussian](examples/Visualize_Diffusion1D_Gaussian.jl)
+[Diffusion of a 1D Gaussian](examples/visualisations/Visualize_Diffusion1D_Gaussian.jl)
 
 ![alt text](img/Diffusion1D_Gaussian.svg)
 
 ### Diffusion 2D
-[Diffusion of a 2D Gaussian](examples/Visualize_Diffusion2D_Gaussian.jl)
+[Diffusion of a 2D Gaussian](examples/visualisations/Visualize_Diffusion2D_Gaussian.jl)
 
 ![alt text](img/Diffusion2D_Gaussian.svg)
 
 ### Stokes 2D
-[Viscous inclusion - Schmid & Podladchikov (2003)](examples/Visualize_Stokes2D_Schmid2003.jl)
+[Viscous inclusion - Schmid & Podladchikov (2003)](examples/visualisations/Visualize_Stokes2D_Schmid2003.jl)
 
 ![alt text](img/Stokes2D_Schmid2003.svg "Schmid & Podladchikov (2003)")
 
-[Double corner flow - Moulas et al., (2021)](examples/Visualize_Stokes2D_Moulas2021.jl)
+[Double corner flow - Moulas et al., (2021)](examples/visualisations/Visualize_Stokes2D_Moulas2021.jl)
 
 ![alt text](img/Stokes2D_Moulas2021.svg "Moulas et al. (2021)")
 
-[Donea & Huerta (2003)](examples/Visualize_Stokes2D_Donea2003.jl)
+[Donea & Huerta (2003)](examples/visualisations/Visualize_Stokes2D_Donea2003.jl)
 
 ![alt text](img/Stokes2D_Donea2003.svg "Donea & Huerta (2003)")
 
-[SolKz - Zhong et al. (1996)](examples/Visualize_Stokes2D_SolKz_Zhong1996.jl)
+[SolKz - Zhong et al. (1996)](examples/visualisations/Visualize_Stokes2D_SolKz_Zhong1996.jl)
 
 ![alt text](img/Stokes2D_SolKz_Zhong1996.svg "Zhong et al. (1996)")
 
 
-[SolCx - Zhong et al. (1996)](examples/Visualize_Stokes2D_SolCx_Zhong1996.jl)
+[SolCx - Zhong et al. (1996)](examples/visualisations/Visualize_Stokes2D_SolCx_Zhong1996.jl)
 
 ![alt text](img/Stokes2D_SolCx_Zhong1996.svg "Zhong et al. (1996)")
 
 ### Elasticity 2D
-[Elastic plate with a hole](examples/Visualize_Elasticity2D_Hole.jl)
+[Elastic plate with a hole](examples/visualisations/Visualize_Elasticity2D_Hole.jl)
 
 ![alt text](img/Elasticity2D_Hole.svg "Elastic plate with a hole")
+
+### Benchmarking
+
+[1D diffusion: Finite Difference Method (FDM) with backward-Euler integration and spatial staggering](examples/benchmarks/Benchmark_Thermal1D.jl)
+
+
+![alt text](img/Benchmark_Diffusion1D_FDM.svg "Diffusion in 1D using the Finite Difference Method (FDM): backward-Euler and spatial staggering") 
