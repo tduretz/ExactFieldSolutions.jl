@@ -87,7 +87,7 @@ function main(Δx, Δt, ncx, nt, L)
     Cp  = 1.0
     k   = 1.0
     t   = 0.
-    θ   = 0.5 # Crank-Nicolson scheme
+    θ   = 1.0 # Crank-Nicolson scheme
 
     # Allocations
     T   = zeros(ncx)
@@ -116,7 +116,7 @@ function main(Δx, Δt, ncx, nt, L)
     # Time loop
     for it=1:nt
         T0 .= T
-        t += Δt 
+        t  += Δt 
         @printf("########### Step %06d ###########\n", it)
 
         for iter=1:10
@@ -158,7 +158,7 @@ function ConvergenceAnalysis()
     # Time
     ncx = 400
     Δx  = L/ncx
-    Nt  = [10, 20, 40, 80, 160, 320]  
+    Nt  = [40, 80, 160, 320]  
     Δtv = 0.01 ./ Nt
     ϵt  = zero(Δtv)
     for i in eachindex(Nt)
@@ -171,7 +171,7 @@ function ConvergenceAnalysis()
      # Time
      L   = 2.
      nt  = 100
-     Ncx = [ 40, 80, 160, 320]  
+     Ncx = [40, 80, 160, 320]  
      Δxv = 2.0 ./ Ncx
      ϵx  = zero(Δtv)
      for i in eachindex(Ncx)
