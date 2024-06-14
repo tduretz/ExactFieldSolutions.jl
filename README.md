@@ -30,6 +30,11 @@ Please note that `ExactFieldSolutions` is a registered package, so you can insta
 
 ![alt text](img/Diffusion2D_Gaussian.svg)
 
+### Wave 1D 
+[Propagation of a 1D wave based on d'Alembert's solution](examples/visualisations/Visualize_Wave1D_dAlembert.jl)
+
+![alt text](img/Wave1D_dAlembert1747.svg)
+
 ### Stokes 2D
 [Viscous inclusion - Schmid & Podladchikov (2003)](examples/visualisations/Visualize_Stokes2D_Schmid2003.jl)
 
