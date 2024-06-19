@@ -35,5 +35,5 @@ function Wave1D_dAlembert(x;
     gradu  = ForwardDiff.gradient(f_cl, x)
     hessu  = ForwardDiff.hessian(f_cl, x)
     s      = hessu[2,2] - params.c^2*(hessu[1,1])
-    return (u=u, ∇u=gradu, s=s)
+    return (u=u, ∇u=gradu, s=s, G=params.c)
 end

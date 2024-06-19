@@ -1,49 +1,67 @@
-using Plots, ExactFieldSolutions
+using Plots, ExactFieldSolutions, StaticArrays
 import Statistics: mean
+
+# Dynamic dispatch based on a rule
+_type(rule) = Val{rule}()
+Analytics(rule, x)                 = _func(_type(rule), x) 
+_func(::Val{:dAlembert}       , x) = Wave1D_dAlembert(x)
+_func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
 
 function main_VelStress(Δx, Δt, ncx, nt, L)
 
+    # Problem type
+    problem = :dAlembert
+    problem = :HeteroPlusSource
+
     # Parameters
     x   = (min=-L/2, max=L/2)
+    xv  = LinRange(x.min,       x.max,       ncx+1)
     xc  = LinRange(x.min-Δx/2., x.max+Δx/2., ncx+2) # with ghosts nodes
-    ρ   = 1.0
-    E   = 1.0
-    t   = 0.
-    k   = 8.
-    c   = sqrt(E/ρ)
+    ρ   = 2.0
+    t   = 0.0
 
     # Allocations
     V   = zeros(ncx+2)
     Va  = zeros(ncx+2)
     σ   = zeros(ncx+1)
+    G   = zeros(ncx+1)
+    f   = zeros(ncx+2)
 
-    # Initial condition: Evaluate exact initial solution
-    params = (c=c, k=k)
+    # Initial condition: Evaluate exact initial solution    
     for i in eachindex(V)
-        sol   = Wave1D_dAlembert([xc[i]; t]; params)
+        sol  = Analytics(problem, [xc[i]; t])
         V[i] = sol.∇u[2]
     end
 
     for i in eachindex(σ)
-        sol   = Wave1D_dAlembert([xc[i]; t]; params)
-        σ[i] = E*sol.∇u[1]
+        sol  = Analytics(problem,[xv[i]; t-1*Δt/2]) # ⚠ time staggering
+        G[i] = sol.G
+        σ[i] = G[i]*sol.∇u[1]
     end
 
     # Time loop
     for it=1:nt
-        t += Δt 
+
+        # Upda
+        for i in eachindex(V)
+            sol  = Analytics(problem, @SVector([xc[i]; t]))
+            f[i] = sol.s
+        end
+
         # Set BCs
-        sol          = Wave1D_dAlembert([xc[1];   t]; params)
+        sol          = Analytics(problem,[xc[1];   t])
         V[1]         = sol.∇u[2]
-        sol          = Wave1D_dAlembert([xc[end]; t]; params)
+        sol          = Analytics(problem,[xc[end]; t])
         V[end]       = sol.∇u[2]
-        σ          .+= Δt*E*diff(V, dims=1)/Δx
-        V[2:end-1] .+= Δt/ρ*diff(σ, dims=1)/Δx 
+        σ          .+= Δt*G.* diff(V, dims=1)/Δx
+        V[2:end-1] .+= Δt/ρ.*(diff(σ, dims=1)/Δx + f[2:end-1]) 
+        # Time update
+        t += Δt 
     end
 
     # Evaluate exact solution
     for i in eachindex(V)
-        sol   = Wave1D_dAlembert([xc[i]; t]; params)
+        sol   = Analytics(problem,[xc[i]; t])
         Va[i] = sol.∇u[2]
     end
 
@@ -62,31 +80,30 @@ function ConvergenceAnalysis()
     L   = 1.0
     tt  = 0.2
 
-    ρ   = 1.0
-    E   = 1.0
-    c   = sqrt(E/ρ)
+    ρ    = 1.0
+    maxG = 10.0
 
     # Time
     ncx = 400
     Δx  = L/ncx
-    Nt  = [20, 20, 40, 80, 160]  
+    Nt  = [160, 320, 640]  
     Δtv = 0.01 ./ Nt
     ϵt  = zero(Δtv)
     for i in eachindex(Nt)
-        Δx    = 2.1 * (Δtv[i]*sqrt(E/ρ))
+        Δx    = 2.1 * (Δtv[i]*sqrt(maxG/ρ)) * 20
         ncx   = Int64(floor(L/Δx))
         L     = ncx*Δx
         ϵt[i] = main_VelStress(Δx, Δtv[i], ncx, Nt[i], L)
     end
 
-     # Time
+     # Space
      L   = 2.
      nt  = 100
-     Ncx = [20, 40, 80, 160]  
+     Ncx = [160, 320, 640]  
      Δxv = 2.0 ./ Ncx
      ϵx  = zero(Δtv)
      for i in eachindex(Ncx)
-        Δt    = Δxv[i]/sqrt(E/ρ)/2.1
+        Δt    = Δxv[i]/sqrt(maxG/ρ)/2.1 /20
         nt    = Int64(floor(tt/Δt))
         ϵx[i] = main_VelStress(Δxv[i], Δt, Ncx[i], nt, L)
      end

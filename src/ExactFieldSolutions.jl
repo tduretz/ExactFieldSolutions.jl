@@ -1,9 +1,12 @@
 module ExactFieldSolutions
 
-using Plots, SpecialFunctions, ForwardDiff, UnPack, StaticArrays
+using Plots, SpecialFunctions, ForwardDiff, UnPack, StaticArrays, Printf
 
 include("Wave1D/Wave1D_dAlembert.jl")
 export Wave1D_dAlembert
+
+include("Wave1D/Wave1D_HeteroPlusSource.jl")
+export Wave1D_HeteroPlusSource
 
 include("Diffusion1D/Diffusion1D_Gaussian.jl")
 export Diffusion1D_Gaussian

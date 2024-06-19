@@ -1,62 +1,76 @@
-using Plots, SparseArrays, Symbolics, SparseDiffTools, Printf, ExactFieldSolutions
+using Plots, SparseArrays, Symbolics, SparseDiffTools, Printf, ExactFieldSolutions, StaticArrays
 import LinearAlgebra: norm
 import Statistics: mean
 
-function Residual_Conventional!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
+# Dynamic dispatch based on a rule
+_type(rule) = Val{rule}()
+Analytics(rule, x)                 = _func(_type(rule), x) 
+_func(::Val{:dAlembert}       , x) = Wave1D_dAlembert(x)
+_func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
+
+# Problem type
+# problem = :dAlembert
+problem = :HeteroPlusSource
+
+function Residual_Conventional!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
     ncx = length(F)
-    params = (c=sqrt(E/ρ), k=8.0)
     for i in eachindex(U)
         # West flux
         if i==1 # West boundary
             # Previous step
-            sol   = Wave1D_dAlembert([x.min-Δx/2.0; t-1*Δt]; params)
+            sol   = Analytics(problem, [x.min-Δx/2.0; t-1*Δt])
             UW    = sol.u
-            qxW0  = E*(U0[i] - UW)/Δx
+            qxW0  = G[1]*(U0[i] - UW)/Δx
         else # Inside
-            qxW0  = E*(U0[i] - U0[i-1])/Δx
+            qxW0  = G[i]*(U0[i] - U0[i-1])/Δx
         end
        
         # East flux
         if i==ncx  # East boundary
             # Previous step
-            sol   = Wave1D_dAlembert([x.max+Δx/2.0; t-1*Δt]; params)
+            sol   = Analytics(problem, [x.max+Δx/2.0; t-1*Δt])
             UE    = sol.u
-            qxE0  = E*(UE - U0[i])/Δx
+            qxE0  = G[end]*(UE - U0[i])/Δx
         else # Inside
-            qxE0  = E*(U0[i+1] - U0[i])/Δx
+            qxE0  = G[i+1]*(U0[i+1] - U0[i])/Δx
         end
     
         # Balance
-        F[i] = ρ*(1*U[i] - 2*U0[i] + 1*U00[i])/Δt/Δt - (qxE0 - qxW0)/Δx 
+        F[i] = ρ*(1*U[i] - 2*U0[i] + 1*U00[i])/Δt/Δt - (qxE0 - qxW0)/Δx - f[i]
     end
     return nothing
 end
 
-Residual!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)  = Residual_Conventional!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
+Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)  = Residual_Conventional!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
 
 function main_Wave1D_Conventional(Δx, Δt, ncx, nt, L)
 
     # Parameters
     x   = (min=-L/2, max=L/2)
-    xc  = LinRange(x.min+Δx/2., x.max-Δx/2., ncx)
-    ρ   = 1.0
-    E   = 1.0
+    xv  = LinRange(x.min,       x.max,       ncx+1)
+    xc  = LinRange(x.min+Δx/2., x.max-Δx/2., ncx  )
+    ρ   = 2.0
     t   = 0.
-    k   = 8.
-    c   = sqrt(E/ρ)
 
     # Allocations
     U   = zeros(ncx)
     U0  = zeros(ncx)
     U00 = zeros(ncx)
+    f   = zeros(ncx)
     δU  = zeros(ncx)
     Ua  = zeros(ncx)
     F   = zeros(ncx)
+    G   = zeros(ncx+1)
+
+    for i in eachindex(G)
+        sol   = Analytics(problem, @SVector([xv[i]; t]))
+        G[i]  = sol.G
+    end
 
     # Sparsity pattern
     input       = rand(ncx)
     output      = similar(input)
-    Res_closed! = (F, U) -> Residual!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
+    Res_closed! = (F, U) -> Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
     sparsity    = Symbolics.jacobian_sparsity(Res_closed!, output, input)
     J           = Float64.(sparse(sparsity))
 
@@ -64,11 +78,10 @@ function main_Wave1D_Conventional(Δx, Δt, ncx, nt, L)
     colors      = matrix_colors(J)
 
     # Initial condition: Evaluate exact initial solution
-    params = (c=c, k=k)
     for i in eachindex(U)
-        sol   = Wave1D_dAlembert([xc[i]; t   ]; params)
+        sol   = Analytics(problem, [xc[i]; t   ])
         U[i]  = sol.u
-        sol   = Wave1D_dAlembert([xc[i]; t-Δt]; params)
+        sol   = Analytics(problem, [xc[i]; t-Δt])
         U0[i] = sol.u
     end
     
@@ -79,14 +92,19 @@ function main_Wave1D_Conventional(Δx, Δt, ncx, nt, L)
         t   += Δt 
         @printf("########### Step %06d ###########\n", it)
 
+        for i in eachindex(f)
+            sol   = Analytics(problem, @SVector([xc[i]; t-Δt]))
+            f[i]  = sol.s
+        end
+
         for iter=1:10
 
             # Residual evaluation: T is found if F = 0
-            Residual!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
-            Res_closed! = (F, U) -> Residual!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
+            Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
+            Res_closed! = (F, U) -> Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
             r = norm(F)/ncx
             @printf("## Iteration %06d: r = %1.2e ##\n", iter, r)
-            if r < 1e-10 break end
+            if r < 1e-8 break end
                 
             # Jacobian assembly
             forwarddiff_color_jacobian!(J, Res_closed!, U, colorvec = colors)
@@ -101,7 +119,7 @@ function main_Wave1D_Conventional(Δx, Δt, ncx, nt, L)
 
     # Evaluate exact solution
     for i in eachindex(U)
-        sol   = Wave1D_dAlembert([xc[i]; t]; params)
+        sol   = Analytics(problem, [xc[i]; t])
         Ua[i] = sol.u
     end
 
@@ -120,18 +138,17 @@ function ConvergenceAnalysis()
     L   = 1.0
     tt  = 0.2
 
-    ρ   = 1.0
-    E   = 1.0
-    c   = sqrt(E/ρ)
+    ρ   = 2.0
+    G   = 1.0
 
     # Time
     ncx = 400
     Δx  = L/ncx
-    Nt  = [20, 20, 40, 80, 160]  
+    Nt  = [80, 160, 320, 640]  
     Δtv = 0.01 ./ Nt
     ϵt  = zero(Δtv)
     for i in eachindex(Nt)
-        Δx    = 2.1 * (Δtv[i]*sqrt(E/ρ))
+        Δx    = 2.1 * (Δtv[i]*sqrt(G/ρ)) * 20
         ncx   = Int64(floor(L/Δx))
         L     = ncx*Δx
         ϵt[i] = main_Wave1D_Conventional(Δx, Δtv[i], ncx, Nt[i], L)
@@ -140,11 +157,11 @@ function ConvergenceAnalysis()
      # Time
      L   = 2.
      nt  = 100
-     Ncx = [20, 40, 80, 160]  
+     Ncx = [160, 320, 640]  
      Δxv = 2.0 ./ Ncx
      ϵx  = zero(Δtv)
      for i in eachindex(Ncx)
-        Δt    = Δxv[i]/sqrt(E/ρ)/2.1
+        Δt    = Δxv[i]/sqrt(G/ρ)/2.1 / 20
         nt    = Int64(floor(tt/Δt))
         ϵx[i] = main_Wave1D_Conventional(Δxv[i], Δt, Ncx[i], nt, L)
      end
@@ -166,16 +183,16 @@ ConvergenceAnalysis()
 
 # begin
 #     ρ   = 1.0
-#     E   = 1.0
+#     G   = 1.0
 #     t   = 0.
 #     k   = 8.
-#     c   = sqrt(E/ρ)
+#     c   = sqrt(G/ρ)
 #     L   = 1.0
 #     t   = 0.2
 #     ncx = 500
 #     Δx  = L/ncx
 #     nt  = 1000
-#     Δt  = Δx/sqrt(E/ρ)/2.1
+#     Δt  = Δx/sqrt(G/ρ)/2.1
 #     nt  = Int64(floor(t/Δt))
 #     main(Δx, Δt, ncx, nt, L)
 # end
