@@ -4,7 +4,6 @@ import Statistics: mean
 
 function Residual_OSA!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
     ncx = length(F)
-    params = (c=sqrt(E/ρ), k=8.0)
     for i in eachindex(U)
 
         # Center point at 3 time levels
@@ -15,13 +14,13 @@ function Residual_OSA!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
         # West point
         if i==1 # West boundary
             # Previous previous step
-            sol   = Wave1D_dAlembert([x.min-Δx/2.0; t-2*Δt]; params)
+            sol   = Wave1D_dAlembert([x.min-Δx/2.0; t-2*Δt])
             UW00  = sol.u
             # Previous step
-            sol   = Wave1D_dAlembert([x.min-Δx/2.0; t-1*Δt]; params)
+            sol   = Wave1D_dAlembert([x.min-Δx/2.0; t-1*Δt])
             UW0   = sol.u
             # Current step
-            sol   = Wave1D_dAlembert([x.min-Δx/2.0; t-0*Δt]; params)
+            sol   = Wave1D_dAlembert([x.min-Δx/2.0; t-0*Δt])
             UW    = sol.u
         else # Inside
             UW00 = U00[i-1]
@@ -32,13 +31,13 @@ function Residual_OSA!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
         # East point
         if i==ncx  # East boundary
             # Previous previous step
-            sol   = Wave1D_dAlembert([x.max+Δx/2.0; t-2*Δt]; params)
+            sol   = Wave1D_dAlembert([x.max+Δx/2.0; t-2*Δt])
             UE00  = sol.u
             # Previous step
-            sol   = Wave1D_dAlembert([x.max+Δx/2.0; t-1*Δt]; params)
+            sol   = Wave1D_dAlembert([x.max+Δx/2.0; t-1*Δt])
             UE0   = sol.u
             # Current step
-            sol   = Wave1D_dAlembert([x.max+Δx/2.0; t-0*Δt]; params)
+            sol   = Wave1D_dAlembert([x.max+Δx/2.0; t-0*Δt])
             UE    = sol.u
         else # Inside
             UE00 = U00[i+1]
@@ -73,7 +72,7 @@ function main_Wave1D_OSA(Δx, Δt, ncx, nt, L)
     # Parameters
     x   = (min=-L/2, max=L/2)
     xc  = LinRange(x.min+Δx/2., x.max-Δx/2., ncx)
-    ρ   = 1.0
+    ρ   = 2.0
     E   = 1.0
     t   = 0.
     k   = 8.
@@ -100,9 +99,9 @@ function main_Wave1D_OSA(Δx, Δt, ncx, nt, L)
     # Initial condition: Evaluate exact initial solution
     params = (c=c, k=k)
     for i in eachindex(U)
-        sol   = Wave1D_dAlembert([xc[i]; t   ]; params)
+        sol   = Wave1D_dAlembert([xc[i]; t   ])
         U[i]  = sol.u
-        sol   = Wave1D_dAlembert([xc[i]; t-Δt]; params)
+        sol   = Wave1D_dAlembert([xc[i]; t-Δt])
         U0[i] = sol.u
     end
     
@@ -135,7 +134,7 @@ function main_Wave1D_OSA(Δx, Δt, ncx, nt, L)
 
     # Evaluate exact solution
     for i in eachindex(U)
-        sol   = Wave1D_dAlembert([xc[i]; t]; params)
+        sol   = Wave1D_dAlembert([xc[i]; t])
         Ua[i] = sol.u
     end
 
@@ -165,10 +164,10 @@ function ConvergenceAnalysis()
     Δtv = 0.01 ./ Nt
     ϵt  = zero(Δtv)
     for i in eachindex(Nt)
-        Δx    = 2.1 * (Δtv[i]*sqrt(E/ρ)) *20 # Somehow dx has to be large for proper dt convergence!
+        Δx    = 2.1 * (Δtv[i]*sqrt(E/ρ)) *20 # Somehow dx has to be large for proper dt
         ncx   = Int64(floor(L/Δx))
         L     = ncx*Δx
-        ϵt[i] = main_Wave1D_Conventional(Δx, Δtv[i], ncx, Nt[i], L)
+        ϵt[i] = main_Wave1D_OSA(Δx, Δtv[i], ncx, Nt[i], L)
     end
 
      # Space
@@ -180,7 +179,7 @@ function ConvergenceAnalysis()
      for i in eachindex(Ncx)
         Δt    = Δxv[i]/sqrt(E/ρ)/2.1
         nt    = Int64(floor(tt/Δt))
-        ϵx[i] = main_Wave1D_Conventional(Δxv[i], Δt, Ncx[i], nt, L)
+        ϵx[i] = main_Wave1D_OSA(Δxv[i], Δt, Ncx[i], nt, L)
      end
 
     p1 = plot(xlabel="log10(1/Δx)", ylabel="log10(ϵx)")

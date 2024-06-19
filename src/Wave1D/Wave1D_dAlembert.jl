@@ -1,6 +1,6 @@
 function Wave1D_dAlembert_u_fwd(x, params)
-    @unpack c, k  = params
-    return real(exp(im*k*(x[1] - c*x[2])))
+    @unpack ρ, k, G  = params
+    return real(exp(im*k*(x[1] - sqrt(G/ρ)*x[2])))
 end
 
 @doc raw"""
@@ -29,11 +29,12 @@ julia> Wave1D_dAlembert([0 2]; params)
 ```
 """
 function Wave1D_dAlembert(x;
-    params = (c=1.0, k=8.0) )
+    params = (ρ=2.0, k=8.0, G=1.0) )
+    c      = sqrt(params.G/params.ρ)
     u      = Wave1D_dAlembert_u_fwd(x, params)
     f_cl   = x -> Wave1D_dAlembert_u_fwd(x, params)
     gradu  = ForwardDiff.gradient(f_cl, x)
     hessu  = ForwardDiff.hessian(f_cl, x)
-    s      = hessu[2,2] - params.c^2*(hessu[1,1])
-    return (u=u, ∇u=gradu, s=s, G=params.c)
+    s      = hessu[2,2] - c^2*(hessu[1,1])
+    return (u=u, ∇u=gradu, s=s, G=params.G)
 end

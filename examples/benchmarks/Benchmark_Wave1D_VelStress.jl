@@ -7,11 +7,11 @@ Analytics(rule, x)                 = _func(_type(rule), x)
 _func(::Val{:dAlembert}       , x) = Wave1D_dAlembert(x)
 _func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
 
-function main_VelStress(Δx, Δt, ncx, nt, L)
+# Problem type
+problem = :dAlembert
+# problem = :HeteroPlusSource
 
-    # Problem type
-    problem = :dAlembert
-    problem = :HeteroPlusSource
+function main_VelStress(Δx, Δt, ncx, nt, L)
 
     # Parameters
     x   = (min=-L/2, max=L/2)
@@ -42,7 +42,7 @@ function main_VelStress(Δx, Δt, ncx, nt, L)
     # Time loop
     for it=1:nt
 
-        # Upda
+        # Update force
         for i in eachindex(V)
             sol  = Analytics(problem, @SVector([xc[i]; t]))
             f[i] = sol.s
@@ -80,7 +80,7 @@ function ConvergenceAnalysis()
     L   = 1.0
     tt  = 0.2
 
-    ρ    = 1.0
+    ρ    = 2.0
     maxG = 10.0
 
     # Time

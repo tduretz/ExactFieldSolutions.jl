@@ -9,7 +9,7 @@ _func(::Val{:dAlembert}       , x) = Wave1D_dAlembert(x)
 _func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
 
 # Problem type
-# problem = :dAlembert
+problem = :dAlembert
 problem = :HeteroPlusSource
 
 function Residual_Conventional!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)

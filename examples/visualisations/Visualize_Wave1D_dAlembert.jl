@@ -7,13 +7,14 @@ function main()
     Nt   = 5
     x    = LinRange(-1/2, 1/2, Nx)
     xc   = 0.5*(x[2:end] .+ x[1:end-1])
-    c    = 1.0
-    k    = 8
+    G    = 1.
+    ρ    = 1.
+    k    = 8.
     t    = LinRange(0, 0.2, Nt)
     u    = zeros(Nt,Nx)
 
     # Evaluate solution for a several times
-    params = (c=c, k=k)
+    params = (ρ=ρ, k=k, G=G)
     p = plot(xlabel = "x", ylabel = "u" )
     for it in eachindex(t)
         for i in eachindex(x)
