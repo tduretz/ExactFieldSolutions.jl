@@ -9,7 +9,7 @@ _func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
 
 # Problem type
 problem = :dAlembert
-# problem = :HeteroPlusSource
+problem = :HeteroPlusSource
 
 function main_VelStress(Δx, Δt, ncx, nt, L)
 
@@ -17,7 +17,6 @@ function main_VelStress(Δx, Δt, ncx, nt, L)
     x   = (min=-L/2, max=L/2)
     xv  = LinRange(x.min,       x.max,       ncx+1)
     xc  = LinRange(x.min-Δx/2., x.max+Δx/2., ncx+2) # with ghosts nodes
-    ρ   = 2.0
     t   = 0.0
 
     # Allocations
@@ -26,11 +25,13 @@ function main_VelStress(Δx, Δt, ncx, nt, L)
     σ   = zeros(ncx+1)
     G   = zeros(ncx+1)
     f   = zeros(ncx+2)
+    ρ   = zeros(ncx+2)
 
     # Initial condition: Evaluate exact initial solution    
     for i in eachindex(V)
         sol  = Analytics(problem, [xc[i]; t])
         V[i] = sol.∇u[2]
+        ρ[i] = sol.ρ
     end
 
     for i in eachindex(σ)
@@ -53,8 +54,8 @@ function main_VelStress(Δx, Δt, ncx, nt, L)
         V[1]         = sol.∇u[2]
         sol          = Analytics(problem,[xc[end]; t])
         V[end]       = sol.∇u[2]
-        σ          .+= Δt*G.* diff(V, dims=1)/Δx
-        V[2:end-1] .+= Δt/ρ.*(diff(σ, dims=1)/Δx + f[2:end-1]) 
+        σ          .+= Δt *G         .* diff(V, dims=1)/Δx
+        V[2:end-1] .+= Δt./ρ[2:end-1].*(diff(σ, dims=1)/Δx + f[2:end-1]) 
         # Time update
         t += Δt 
     end
@@ -90,7 +91,7 @@ function ConvergenceAnalysis()
     Δtv = 0.01 ./ Nt
     ϵt  = zero(Δtv)
     for i in eachindex(Nt)
-        Δx    = 2.1 * (Δtv[i]*sqrt(maxG/ρ)) * 20
+        Δx    = 2.1 * (Δtv[i]*sqrt(maxG/ρ)) * 80
         ncx   = Int64(floor(L/Δx))
         L     = ncx*Δx
         ϵt[i] = main_VelStress(Δx, Δtv[i], ncx, Nt[i], L)

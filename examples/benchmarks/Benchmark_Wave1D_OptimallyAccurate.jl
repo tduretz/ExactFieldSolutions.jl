@@ -9,8 +9,10 @@ _func(::Val{:dAlembert}       , x) = Wave1D_dAlembert(x)
 _func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
 
 # Problem type
-# problem = :dAlembert
-problem = :HeteroPlusSource
+problem = :dAlembert
+# problem = :HeteroPlusSource
+
+noisy =  false
 
 function Residual_OSOA!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
     ncx = length(F)
@@ -73,7 +75,7 @@ function Residual_OSOA!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
         Mt = @SVector([1/12;     10/12;          1/12;    -2/12;    -20/12;           -2/12;     1/12;    10/12;           1/12]) 
         Mx = @SVector([1/12*GW; -2/12*(GW+GE)/2; 1/12*GE; 10/12*GW; -20/12*(GW+GE)/2; 10/12*GE;  1/12*GW; -2/12*(GW+GE)/2; 1/12*GE])
         u  = @SVector([UW00; UC00; UE00; UW0; UC0; UE0; UW; UC; UE])
-        F[i] = ρ/Δt^2*Mt'*u  - 1/Δx^2*Mx'u - f[i]
+        F[i] = ρ[i]/Δt^2*Mt'*u  - 1/Δx^2*Mx'u - f[i]
     end
     return nothing
 end
@@ -86,7 +88,6 @@ function main_Wave1D_OSOA(Δx, Δt, ncx, nt, L)
     x   = (min=-L/2, max=L/2)
     xv  = LinRange(x.min,       x.max,       ncx+1)
     xc  = LinRange(x.min+Δx/2., x.max-Δx/2., ncx  )
-    ρ   = 2.0
     t   = 0.
 
     # Allocations
@@ -97,11 +98,18 @@ function main_Wave1D_OSOA(Δx, Δt, ncx, nt, L)
     δU  = zeros(ncx)
     Ua  = zeros(ncx)
     F   = zeros(ncx)
+    ρ   = zeros(ncx)
     G   = zeros(ncx+1)
 
     for i in eachindex(G)
         sol   = Analytics(problem, @SVector([xv[i]; t]))
         G[i]  = sol.G
+    end
+
+    for i in eachindex(ρ)
+        sol   = Analytics(problem, @SVector([xc[i]; t]))
+        G
+        ρ[i]  = sol.ρ
     end
 
     # Sparsity pattern
@@ -127,21 +135,23 @@ function main_Wave1D_OSOA(Δx, Δt, ncx, nt, L)
         U00 .= U0
         U0  .= U
         t   += Δt 
-        @printf("########### Step %06d ###########\n", it)
+        noisy==true ? @printf("########### Step %06d ###########\n", it) : nothing
 
         for i in eachindex(f)
             sol   = Analytics(problem, @SVector([xc[i]; t-Δt]))
             f[i]  = sol.s
         end
 
+        r1 = 1.0
         for iter=1:10
 
             # Residual evaluation: T is found if F = 0
             Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
             Res_closed! = (F, U) -> Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
             r = norm(F)/ncx
-            @printf("## Iteration %06d: r = %1.2e ##\n", iter, r)
-            if r < 1e-8 break end
+            if iter==1 r1 = r; end
+            noisy==true ? @printf("## Iteration %06d: r/r1 = %1.2e ##\n", iter, r/r1) : nothing
+            if r/r1 < 1e-8 break end
                 
             # Jacobian assembly
             forwarddiff_color_jacobian!(J, Res_closed!, U, colorvec = colors)
@@ -175,8 +185,8 @@ function ConvergenceAnalysis()
     L   = 1.0
     tt  = 0.2
 
-    ρ   = 1.0
-    E   = 1.0
+    ρ   = 1.0 # Indicative values
+    G   = 1.0 # Indicative values
 
     # Time
     ncx = 400
@@ -185,7 +195,7 @@ function ConvergenceAnalysis()
     Δtv = 0.01 ./ Nt
     ϵt  = zero(Δtv)
     for i in eachindex(Nt)
-        Δx    = 2.1 * (Δtv[i]*sqrt(E/ρ)) * 100 # Somehow dx has to be large for proper dt
+        Δx    = 2.1 * (Δtv[i]*sqrt(G/ρ)) * 100 # Somehow dx has to be large for proper dt
         ncx   = Int64(floor(L/Δx))
         L     = ncx*Δx
         ϵt[i] = main_Wave1D_OSOA(Δx, Δtv[i], ncx, Nt[i], L)
@@ -198,7 +208,7 @@ function ConvergenceAnalysis()
     Δxv = 2.0 ./ Ncx
     ϵx  = zero(Δtv)
     for i in eachindex(Ncx)
-        Δt    = Δxv[i]/sqrt(E/ρ)/2.1 / 20
+        Δt    = Δxv[i]/sqrt(G/ρ)/2.1 / 20
         nt    = Int64(floor(tt/Δt))
         ϵx[i] = main_Wave1D_OSOA(Δxv[i], Δt, Ncx[i], nt, L)
     end

@@ -4,12 +4,12 @@ function Wave1D_dAlembert_u_fwd(x, params)
 end
 
 @doc raw"""
-    sol = Diffusion1D_Gaussian(x; params)  
+    sol = Wave1D_dAlembert(x; params)  
 
 Evaluates the manufactured solution of an initial 1D wave:
 
     x      : is the coordinate and time vector, x[1] is space and x[2] is time 
-    params : optional parameter array, default: (c = 1.0, k = 8.0) 
+    params : optional parameter tuple, default: (ρ=2.0, k=8.0, G=1.0) 
 and returns:
 
     sol    : tuple containing the solution fields u, ∇u and the source term s = -Δu 
@@ -17,15 +17,15 @@ and returns:
 # Examples
 ```julia-repl
 julia> Wave1D_dAlembert([0 0])
-(u = 1.0, ∇u = [0.0 -0.0], s = 0.0)
+(u = 1.0, ∇u = [0.0 -0.0], s = 0.0, G = 1.0, ρ = 2.0)
 ```
 
 ```julia-repl
-julia> Wave1D_dAlembert([0 0]; params)
-(u = 1.0, ∇u = [0.0 0.0], s = 0.0)
+julia> params = (ρ = 200.0, k = 80.0, G = 0.5)
+(ρ = 200.0, k = 80.0, G = 0.5)
 
 julia> Wave1D_dAlembert([0 2]; params)
-(u = 0.424179007336997, ∇u = [10.866940344079486 10.866940344079486], s = 0.0)
+(u = -0.14550003380861354, ∇u = [79.14865972987054 -3.957432986493527], s = -4.440892098500626e-16, G = 0.5, ρ = 200.0)
 ```
 """
 function Wave1D_dAlembert(x;
@@ -36,5 +36,5 @@ function Wave1D_dAlembert(x;
     gradu  = ForwardDiff.gradient(f_cl, x)
     hessu  = ForwardDiff.hessian(f_cl, x)
     s      = hessu[2,2] - c^2*(hessu[1,1])
-    return (u=u, ∇u=gradu, s=s, G=params.G)
+    return (u=u, ∇u=gradu, s=s, G=params.G, ρ=params.ρ)
 end

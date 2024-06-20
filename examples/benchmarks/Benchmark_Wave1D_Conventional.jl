@@ -12,6 +12,8 @@ _func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
 problem = :dAlembert
 problem = :HeteroPlusSource
 
+noisy = true
+
 function Residual_Conventional!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
     ncx = length(F)
     for i in eachindex(U)
@@ -36,7 +38,7 @@ function Residual_Conventional!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
         end
     
         # Balance
-        F[i] = ρ*(1*U[i] - 2*U0[i] + 1*U00[i])/Δt/Δt - (qxE0 - qxW0)/Δx - f[i]
+        F[i] = ρ[i]*(1*U[i] - 2*U0[i] + 1*U00[i])/Δt/Δt - (qxE0 - qxW0)/Δx - f[i]
     end
     return nothing
 end
@@ -49,7 +51,6 @@ function main_Wave1D_Conventional(Δx, Δt, ncx, nt, L)
     x   = (min=-L/2, max=L/2)
     xv  = LinRange(x.min,       x.max,       ncx+1)
     xc  = LinRange(x.min+Δx/2., x.max-Δx/2., ncx  )
-    ρ   = 2.0
     t   = 0.
 
     # Allocations
@@ -60,11 +61,18 @@ function main_Wave1D_Conventional(Δx, Δt, ncx, nt, L)
     δU  = zeros(ncx)
     Ua  = zeros(ncx)
     F   = zeros(ncx)
+    ρ   = zeros(ncx)
     G   = zeros(ncx+1)
 
     for i in eachindex(G)
         sol   = Analytics(problem, @SVector([xv[i]; t]))
         G[i]  = sol.G
+    end
+
+    for i in eachindex(ρ)
+        sol   = Analytics(problem, @SVector([xc[i]; t]))
+        G
+        ρ[i]  = sol.ρ
     end
 
     # Sparsity pattern
@@ -90,21 +98,23 @@ function main_Wave1D_Conventional(Δx, Δt, ncx, nt, L)
         U00 .= U0
         U0  .= U
         t   += Δt 
-        @printf("########### Step %06d ###########\n", it)
+        noisy==true ? @printf("########### Step %06d ###########\n", it) : nothing
 
         for i in eachindex(f)
             sol   = Analytics(problem, @SVector([xc[i]; t-Δt]))
             f[i]  = sol.s
         end
 
+        r1 = 1.0
         for iter=1:10
 
             # Residual evaluation: T is found if F = 0
             Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
             Res_closed! = (F, U) -> Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
             r = norm(F)/ncx
-            @printf("## Iteration %06d: r = %1.2e ##\n", iter, r)
-            if r < 1e-8 break end
+            if iter==1 r1 = r; end
+            noisy==true ? @printf("## Iteration %06d: r/r1 = %1.2e ##\n", iter, r/r1) : nothing
+            if r/r1 < 1e-8 break end
                 
             # Jacobian assembly
             forwarddiff_color_jacobian!(J, Res_closed!, U, colorvec = colors)

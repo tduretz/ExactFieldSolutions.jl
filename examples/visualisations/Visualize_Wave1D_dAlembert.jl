@@ -6,7 +6,6 @@ function main()
     Nx   = 500
     Nt   = 5
     x    = LinRange(-1/2, 1/2, Nx)
-    xc   = 0.5*(x[2:end] .+ x[1:end-1])
     G    = 1.
     ρ    = 1.
     k    = 8.
