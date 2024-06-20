@@ -18,7 +18,7 @@ function Residual_Conventional!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
         # West flux
         if i==1 # West boundary
             # Previous step
-            sol   = Analytics(problem, [x.min-Δx/2.0; t-1*Δt])
+            sol   = Analytics(problem, @SVector([x.min-Δx/2.0; t-1*Δt]))
             UW    = sol.u
             qxW0  = G[1]*(U0[i] - UW)/Δx
         else # Inside
@@ -28,7 +28,7 @@ function Residual_Conventional!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
         # East flux
         if i==ncx  # East boundary
             # Previous step
-            sol   = Analytics(problem, [x.max+Δx/2.0; t-1*Δt])
+            sol   = Analytics(problem, @SVector([x.max+Δx/2.0; t-1*Δt]))
             UE    = sol.u
             qxE0  = G[end]*(UE - U0[i])/Δx
         else # Inside
@@ -119,7 +119,7 @@ function main_Wave1D_Conventional(Δx, Δt, ncx, nt, L)
 
     # Evaluate exact solution
     for i in eachindex(U)
-        sol   = Analytics(problem, [xc[i]; t])
+        sol   = Analytics(problem, @SVector([xc[i]; t]))
         Ua[i] = sol.u
     end
 
@@ -154,17 +154,17 @@ function ConvergenceAnalysis()
         ϵt[i] = main_Wave1D_Conventional(Δx, Δtv[i], ncx, Nt[i], L)
     end
 
-     # Time
-     L   = 2.
-     nt  = 100
-     Ncx = [160, 320, 640]  
-     Δxv = 2.0 ./ Ncx
-     ϵx  = zero(Δtv)
-     for i in eachindex(Ncx)
-        Δt    = Δxv[i]/sqrt(G/ρ)/2.1 / 20
-        nt    = Int64(floor(tt/Δt))
-        ϵx[i] = main_Wave1D_Conventional(Δxv[i], Δt, Ncx[i], nt, L)
-     end
+    # Space
+    L   = 2.
+    nt  = 100
+    Ncx = [160, 320, 640]  
+    Δxv = 2.0 ./ Ncx
+    ϵx  = zero(Δtv)
+    for i in eachindex(Ncx)
+    Δt    = Δxv[i]/sqrt(G/ρ)/2.1 / 20
+    nt    = Int64(floor(tt/Δt))
+    ϵx[i] = main_Wave1D_Conventional(Δxv[i], Δt, Ncx[i], nt, L)
+end
 
     p1 = plot(xlabel="log10(1/Δx)", ylabel="log10(ϵx)")
     p1 = scatter!( log10.( 1.0./Δxv ), log10.(ϵx), label="ϵ")

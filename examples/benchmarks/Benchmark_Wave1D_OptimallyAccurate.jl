@@ -2,7 +2,17 @@ using Plots, SparseArrays, Symbolics, SparseDiffTools, Printf, ExactFieldSolutio
 import LinearAlgebra: norm
 import Statistics: mean
 
-function Residual_OSA!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
+# Dynamic dispatch based on a rule
+_type(rule) = Val{rule}()
+Analytics(rule, x)                 = _func(_type(rule), x) 
+_func(::Val{:dAlembert}       , x) = Wave1D_dAlembert(x)
+_func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
+
+# Problem type
+# problem = :dAlembert
+problem = :HeteroPlusSource
+
+function Residual_OSOA!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
     ncx = length(F)
     for i in eachindex(U)
 
@@ -10,17 +20,20 @@ function Residual_OSA!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
         UC00  = U00[i]
         UC0   = U0[i] 
         UC    = U[i] 
+
+        GW    = G[i]
+        GE    = G[i+1]
         
         # West point
         if i==1 # West boundary
             # Previous previous step
-            sol   = Wave1D_dAlembert([x.min-Δx/2.0; t-2*Δt])
+            sol   = Analytics(problem, @SVector([x.min-Δx/2.0; t-2*Δt]))
             UW00  = sol.u
             # Previous step
-            sol   = Wave1D_dAlembert([x.min-Δx/2.0; t-1*Δt])
+            sol   = Analytics(problem, @SVector([x.min-Δx/2.0; t-1*Δt]))
             UW0   = sol.u
             # Current step
-            sol   = Wave1D_dAlembert([x.min-Δx/2.0; t-0*Δt])
+            sol   = Analytics(problem, @SVector([x.min-Δx/2.0; t-0*Δt]))
             UW    = sol.u
         else # Inside
             UW00 = U00[i-1]
@@ -31,13 +44,13 @@ function Residual_OSA!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
         # East point
         if i==ncx  # East boundary
             # Previous previous step
-            sol   = Wave1D_dAlembert([x.max+Δx/2.0; t-2*Δt])
+            sol   = Analytics(problem, @SVector([x.max+Δx/2.0; t-2*Δt]))
             UE00  = sol.u
             # Previous step
-            sol   = Wave1D_dAlembert([x.max+Δx/2.0; t-1*Δt])
+            sol   = Analytics(problem, @SVector([x.max+Δx/2.0; t-1*Δt]))
             UE0   = sol.u
             # Current step
-            sol   = Wave1D_dAlembert([x.max+Δx/2.0; t-0*Δt])
+            sol   = Analytics(problem, @SVector([x.max+Δx/2.0; t-0*Δt]))
             UE    = sol.u
         else # Inside
             UE00 = U00[i+1]
@@ -57,39 +70,44 @@ function Residual_OSA!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
         # F[i] = ρ/Δt^2*Mt'*u  - E/Δx^2*Mx'u
 
         # Conventional - style 2:
-        Mt = @SVector([1/12; 10/12; 1/12; -2/12; -20/12; -2/12;  1/12; 10/12; 1/12]) 
-        Mx = @SVector([1/12; -2/12; 1/12; 10/12; -20/12; 10/12;  1/12; -2/12; 1/12])
+        Mt = @SVector([1/12;     10/12;          1/12;    -2/12;    -20/12;           -2/12;     1/12;    10/12;           1/12]) 
+        Mx = @SVector([1/12*GW; -2/12*(GW+GE)/2; 1/12*GE; 10/12*GW; -20/12*(GW+GE)/2; 10/12*GE;  1/12*GW; -2/12*(GW+GE)/2; 1/12*GE])
         u  = @SVector([UW00; UC00; UE00; UW0; UC0; UE0; UW; UC; UE])
-        F[i] = ρ/Δt^2*Mt'*u  - E/Δx^2*Mx'u
+        F[i] = ρ/Δt^2*Mt'*u  - 1/Δx^2*Mx'u - f[i]
     end
     return nothing
 end
 
-Residual!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)  = Residual_OSA!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
+Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)  = Residual_OSOA!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
 
-function main_Wave1D_OSA(Δx, Δt, ncx, nt, L)
+function main_Wave1D_OSOA(Δx, Δt, ncx, nt, L)
 
     # Parameters
     x   = (min=-L/2, max=L/2)
-    xc  = LinRange(x.min+Δx/2., x.max-Δx/2., ncx)
+    xv  = LinRange(x.min,       x.max,       ncx+1)
+    xc  = LinRange(x.min+Δx/2., x.max-Δx/2., ncx  )
     ρ   = 2.0
-    E   = 1.0
     t   = 0.
-    k   = 8.
-    c   = sqrt(E/ρ)
 
     # Allocations
     U   = zeros(ncx)
     U0  = zeros(ncx)
     U00 = zeros(ncx)
+    f   = zeros(ncx)
     δU  = zeros(ncx)
     Ua  = zeros(ncx)
     F   = zeros(ncx)
+    G   = zeros(ncx+1)
+
+    for i in eachindex(G)
+        sol   = Analytics(problem, @SVector([xv[i]; t]))
+        G[i]  = sol.G
+    end
 
     # Sparsity pattern
     input       = rand(ncx)
     output      = similar(input)
-    Res_closed! = (F, U) -> Residual!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
+    Res_closed! = (F, U) -> Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
     sparsity    = Symbolics.jacobian_sparsity(Res_closed!, output, input)
     J           = Float64.(sparse(sparsity))
 
@@ -97,11 +115,10 @@ function main_Wave1D_OSA(Δx, Δt, ncx, nt, L)
     colors      = matrix_colors(J)
 
     # Initial condition: Evaluate exact initial solution
-    params = (c=c, k=k)
     for i in eachindex(U)
-        sol   = Wave1D_dAlembert([xc[i]; t   ])
+        sol   = Analytics(problem, @SVector([xc[i]; t   ]))
         U[i]  = sol.u
-        sol   = Wave1D_dAlembert([xc[i]; t-Δt])
+        sol   = Analytics(problem, @SVector([xc[i]; t-Δt]))
         U0[i] = sol.u
     end
     
@@ -112,14 +129,19 @@ function main_Wave1D_OSA(Δx, Δt, ncx, nt, L)
         t   += Δt 
         @printf("########### Step %06d ###########\n", it)
 
+        for i in eachindex(f)
+            sol   = Analytics(problem, @SVector([xc[i]; t-Δt]))
+            f[i]  = sol.s
+        end
+
         for iter=1:10
 
             # Residual evaluation: T is found if F = 0
-            Residual!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
-            Res_closed! = (F, U) -> Residual!(F, U, U0, U00, E, ρ, Δx, Δt, x, t)
+            Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
+            Res_closed! = (F, U) -> Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
             r = norm(F)/ncx
             @printf("## Iteration %06d: r = %1.2e ##\n", iter, r)
-            if r < 1e-9 break end
+            if r < 1e-8 break end
                 
             # Jacobian assembly
             forwarddiff_color_jacobian!(J, Res_closed!, U, colorvec = colors)
@@ -134,7 +156,7 @@ function main_Wave1D_OSA(Δx, Δt, ncx, nt, L)
 
     # Evaluate exact solution
     for i in eachindex(U)
-        sol   = Wave1D_dAlembert([xc[i]; t])
+        sol   = Analytics(problem, @SVector([xc[i]; t]))
         Ua[i] = sol.u
     end
 
@@ -155,32 +177,31 @@ function ConvergenceAnalysis()
 
     ρ   = 1.0
     E   = 1.0
-    c   = sqrt(E/ρ)
 
     # Time
     ncx = 400
     Δx  = L/ncx
-    Nt  = [20, 20, 40, 80, 160]  
+    Nt  = [80, 160, 320, 640]    
     Δtv = 0.01 ./ Nt
     ϵt  = zero(Δtv)
     for i in eachindex(Nt)
-        Δx    = 2.1 * (Δtv[i]*sqrt(E/ρ)) *20 # Somehow dx has to be large for proper dt
+        Δx    = 2.1 * (Δtv[i]*sqrt(E/ρ)) * 100 # Somehow dx has to be large for proper dt
         ncx   = Int64(floor(L/Δx))
         L     = ncx*Δx
-        ϵt[i] = main_Wave1D_OSA(Δx, Δtv[i], ncx, Nt[i], L)
+        ϵt[i] = main_Wave1D_OSOA(Δx, Δtv[i], ncx, Nt[i], L)
     end
 
-     # Space
-     L   = 2.
-     nt  = 100
-     Ncx = [20, 40, 80, 160]  
-     Δxv = 2.0 ./ Ncx
-     ϵx  = zero(Δtv)
-     for i in eachindex(Ncx)
-        Δt    = Δxv[i]/sqrt(E/ρ)/2.1
+    # Space
+    L   = 2.
+    nt  = 100
+    Ncx = [160, 320, 640]  
+    Δxv = 2.0 ./ Ncx
+    ϵx  = zero(Δtv)
+    for i in eachindex(Ncx)
+        Δt    = Δxv[i]/sqrt(E/ρ)/2.1 / 20
         nt    = Int64(floor(tt/Δt))
-        ϵx[i] = main_Wave1D_OSA(Δxv[i], Δt, Ncx[i], nt, L)
-     end
+        ϵx[i] = main_Wave1D_OSOA(Δxv[i], Δt, Ncx[i], nt, L)
+    end
 
     p1 = plot(xlabel="log10(1/Δx)", ylabel="log10(ϵx)")
     p1 = scatter!( log10.( 1.0./Δxv ), log10.(ϵx), label="ϵ")
@@ -196,7 +217,6 @@ function ConvergenceAnalysis()
 
     display(plot(p1, p2))
 end
-
 
 ConvergenceAnalysis()
 
