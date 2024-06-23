@@ -9,7 +9,7 @@ _func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
 
 # Problem type
 problem = :dAlembert
-problem = :HeteroPlusSource
+# problem = :HeteroPlusSource
 
 function main_VelStress(Δx, Δt, ncx, nt, L)
 

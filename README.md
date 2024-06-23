@@ -10,6 +10,8 @@ Contributions are welcome and full field solutions to other problems (electric, 
 
 Please note that `ExactFieldSolutions` is a registered package, so you can install it simply by typing `add ExactFieldSolutions` in package mode.
 
+## Visualisation examples
+
 ### Poisson 2D
 [Sevilla et al. (2018)](examples/visualisations/Visualize_Poisson2D_Sevilla2018.jl)
 
@@ -33,7 +35,11 @@ Please note that `ExactFieldSolutions` is a registered package, so you can insta
 ### Wave 1D 
 [Propagation of a 1D wave based on d'Alembert's solution](examples/visualisations/Visualize_Wave1D_dAlembert.jl)
 
-![alt text](img/Wave1D_dAlembert1747.svg)
+![alt text](img/Wave1D_dAlembert.svg)
+
+[Propagation of a 1D wave with a time-space dependent source and variable coefficient](examples/visualisations/Visualize_Wave1D_HeteroPlusSource.jl)
+
+![alt text](img/Wave1D_HeteroPlusSource.svg)
 
 ### Stokes 2D
 [Viscous inclusion - Schmid & Podladchikov (2003)](examples/visualisations/Visualize_Stokes2D_Schmid2003.jl)
@@ -62,19 +68,28 @@ Please note that `ExactFieldSolutions` is a registered package, so you can insta
 
 ![alt text](img/Elasticity2D_Hole.svg "Elastic plate with a hole")
 
-### Benchmarking
+## Benchmarking examples
 
-[1D diffusion: Finite Difference Method (FDM) with backward-Euler integration and spatial staggering](examples/benchmarks/Benchmark_Thermal1D.jl)
+### Diffusion 1D
 
+[1D diffusion: Finite Difference Method (FDM) with backward-Euler integration and spatial staggering (θ = 1.0)](examples/benchmarks/Benchmark_Diffusion1D.jl)
 
-![alt text](img/Benchmark_Diffusion1D_FDM.svg "Diffusion in 1D using the Finite Difference Method (FDM): backward-Euler and spatial staggering") 
+![alt text](img/Benchmark_Diffusion1D_BackwardEuler_FDM.svg "Diffusion in 1D using the Finite Difference Method (FDM): backward-Euler and spatial staggering") 
+
+[1D diffusion: Finite Difference Method (FDM) with Crank-Nicolson integration and spatial staggering (θ = 0.5)](examples/benchmarks/Benchmark_Diffusion1D.jl)
+
+![alt text](img/Benchmark_Diffusion1D_CrankNicolson_FDM.svg "Diffusion in 1D using the Finite Difference Method (FDM): Crank-Nicolson and spatial staggering") 
+
+### Wave 1D
 
 [1D wave: Finite Difference Method (FDM) with velocity-stress discretisation](examples/benchmarks/Benchmark_Wave1D_VelStress_FDM.jl)
-
 
 ![alt text](img/Benchmark_Wave1D_VelStress_FDM.svg "Wave in 1D using the Finite Difference Method (FDM): velocity-stress scheme") 
 
 [1D wave: Finite Difference Method (FDM) with conventional O(2) discretisation](examples/benchmarks/Benchmark_Wave1D_Conventional_FDM.jl)
 
-
 ![alt text](img/Benchmark_Wave1D_Conventional_FDM.svg "Wave in 1D using the Finite Difference Method (FDM): conventional O(2) discretisation") 
+
+[1D wave: Finite Difference Method (FDM) with conventional O(2) discretisation with constant coefficient](examples/benchmarks/Benchmark_Wave1D_OptimallyAccurate_FDM.jl)
+
+![alt text](img/Benchmark_Wave1D_OptimallyAccurate_FDM.svg "Wave in 1D using the Finite Difference Method (FDM): conventional O(4) discretisation with constant coefficient") 

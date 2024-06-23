@@ -87,7 +87,7 @@ function main(Δx, Δt, ncx, nt, L)
     Cp  = 1.0
     k   = 1.0
     t   = 0.
-    θ   = 1.0 # Crank-Nicolson scheme
+    θ   = 0.5 # Crank-Nicolson scheme
 
     # Allocations
     T   = zeros(ncx)
