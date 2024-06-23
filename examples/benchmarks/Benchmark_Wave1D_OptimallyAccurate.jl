@@ -10,7 +10,7 @@ _func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
 
 # Problem type
 problem = :dAlembert
-# problem = :HeteroPlusSource
+problem = :HeteroPlusSource
 
 noisy =  false
 
@@ -60,7 +60,7 @@ function Residual_OSOA!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
             UE   = U[i+1]
         end
     
-        # Balance
+        # Balance equation
 
         # # Conventional - style 1:
         # F[i] = ρ*(1*UC -2*UC0 + 1*UC00)/Δt^2 - E*(1*UW0  -2*UC0 + 1*UE0)/Δx^2
@@ -100,6 +100,7 @@ function main_Wave1D_OSOA(Δx, Δt, ncx, nt, L)
     F   = zeros(ncx)
     ρ   = zeros(ncx)
     G   = zeros(ncx+1)
+    Gc  = zeros(ncx)
 
     for i in eachindex(G)
         sol   = Analytics(problem, @SVector([xv[i]; t]))
@@ -108,9 +109,12 @@ function main_Wave1D_OSOA(Δx, Δt, ncx, nt, L)
 
     for i in eachindex(ρ)
         sol   = Analytics(problem, @SVector([xc[i]; t]))
-        G
+        Gc[i] = sol.G
         ρ[i]  = sol.ρ
     end
+
+    # If we assume tat coefficient is defined on the U points, then one has to introduce averaging
+    G[2:end-1] .= 0.5*(Gc[1:end-1] .+ Gc[2:end])
 
     # Sparsity pattern
     input       = rand(ncx)
@@ -138,7 +142,7 @@ function main_Wave1D_OSOA(Δx, Δt, ncx, nt, L)
         noisy==true ? @printf("########### Step %06d ###########\n", it) : nothing
 
         for i in eachindex(f)
-            sol   = Analytics(problem, @SVector([xc[i]; t-Δt]))
+            sol   = Analytics(problem, @SVector([xc[i]; t-Δt])) # ???
             f[i]  = sol.s
         end
 
