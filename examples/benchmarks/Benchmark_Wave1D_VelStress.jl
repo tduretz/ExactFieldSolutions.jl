@@ -6,10 +6,13 @@ _type(rule) = Val{rule}()
 Analytics(rule, x)                 = _func(_type(rule), x) 
 _func(::Val{:dAlembert}       , x) = Wave1D_dAlembert(x)
 _func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
+_func(::Val{:Source},           x) = Wave1D_Source(x)
+
 
 # Problem type
 problem = :dAlembert
-# problem = :HeteroPlusSource
+problem = :HeteroPlusSource
+problem = :Source
 
 function main_VelStress(Δx, Δt, ncx, nt, L)
 
@@ -44,7 +47,7 @@ function main_VelStress(Δx, Δt, ncx, nt, L)
     for it=1:nt
 
         # Update force
-        for i in eachindex(V)
+        for i in eachindex(f)
             sol  = Analytics(problem, @SVector([xc[i]; t]))
             f[i] = sol.s
         end

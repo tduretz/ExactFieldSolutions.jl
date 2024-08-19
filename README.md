@@ -78,7 +78,13 @@ Please note that `ExactFieldSolutions` is a registered package, so you can insta
 
 [1D diffusion: Finite Difference Method (FDM) with Crank-Nicolson integration and spatial staggering (θ = 0.5)](examples/benchmarks/Benchmark_Diffusion1D.jl)
 
-![alt text](img/Benchmark_Diffusion1D_CrankNicolson_FDM.svg "Diffusion in 1D using the Finite Difference Method (FDM): Crank-Nicolson and spatial staggering") 
+![alt text](img/Benchmark_Diffusion1D_CrankNicolson_FDM.svg "Diffusion in 1D using the Finite Difference Method (FDM): Crank-Nicolson and spatial staggering")
+
+### Poisson 2D
+
+[2D Poisson: Finite Difference Method (FDM) using an O(4) compact discretisation with constant coefficient](examples/benchmarks/Benchmark_Poisson2D.jl)
+
+![alt text](img/Benchmark_Poisson2D_O4_FDM.svg "2D Poisson problem using O(4) compact finite difference scheme")
 
 ### Wave 1D
 
@@ -90,6 +96,6 @@ Please note that `ExactFieldSolutions` is a registered package, so you can insta
 
 ![alt text](img/Benchmark_Wave1D_Conventional_FDM.svg "Wave in 1D using the Finite Difference Method (FDM): conventional O(2) discretisation") 
 
-[1D wave: Finite Difference Method (FDM) with conventional O(2) discretisation with constant coefficient](examples/benchmarks/Benchmark_Wave1D_OptimallyAccurate_FDM.jl)
+[1D wave: Finite Difference Method (FDM) with optimised O(4) discretisation with constant coefficient](examples/benchmarks/Benchmark_Wave1D_OptimallyAccurate_FDM.jl)
 
-![alt text](img/Benchmark_Wave1D_OptimallyAccurate_FDM.svg "Wave in 1D using the Finite Difference Method (FDM): conventional O(4) discretisation with constant coefficient") 
+![alt text](img/Benchmark_Wave1D_OptimallyAccurate_FDM.svg "Wave in 1D using the Finite Difference Method (FDM): optimised O(4) discretisation with constant coefficient") 

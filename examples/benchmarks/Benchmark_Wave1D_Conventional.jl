@@ -5,14 +5,17 @@ import Statistics: mean
 # Dynamic dispatch based on a rule
 _type(rule) = Val{rule}()
 Analytics(rule, x)                 = _func(_type(rule), x) 
-_func(::Val{:dAlembert}       , x) = Wave1D_dAlembert(x)
+_func(::Val{:dAlembert},        x) = Wave1D_dAlembert(x)
 _func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
+_func(::Val{:Source},           x) = Wave1D_Source(x)
+
 
 # Problem type
 problem = :dAlembert
 problem = :HeteroPlusSource
+problem = :Source
 
-noisy = true
+noisy = false
 
 function Residual_Conventional!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
     ncx = length(F)
@@ -71,7 +74,6 @@ function main_Wave1D_Conventional(Δx, Δt, ncx, nt, L)
 
     for i in eachindex(ρ)
         sol   = Analytics(problem, @SVector([xc[i]; t]))
-        G
         ρ[i]  = sol.ρ
     end
 
@@ -145,7 +147,7 @@ end
 
 function ConvergenceAnalysis()
 
-    L   = 1.0
+    L   = 2.0
     tt  = 0.2
 
     ρ   = 2.0
@@ -158,20 +160,19 @@ function ConvergenceAnalysis()
     Δtv = 0.01 ./ Nt
     ϵt  = zero(Δtv)
     for i in eachindex(Nt)
-        Δx    = 2.1 * (Δtv[i]*sqrt(G/ρ)) * 20
+        Δx    = 2.1 * (Δtv[i]*sqrt(G/ρ)) * 200
         ncx   = Int64(floor(L/Δx))
         L     = ncx*Δx
         ϵt[i] = main_Wave1D_Conventional(Δx, Δtv[i], ncx, Nt[i], L)
     end
 
     # Space
-    L   = 2.
     nt  = 100
     Ncx = [160, 320, 640]  
-    Δxv = 2.0 ./ Ncx
+    Δxv = L ./ Ncx
     ϵx  = zero(Δtv)
     for i in eachindex(Ncx)
-    Δt    = Δxv[i]/sqrt(G/ρ)/2.1 / 20
+    Δt    = Δxv[i]/sqrt(G/ρ)/2.1 / 200
     nt    = Int64(floor(tt/Δt))
     ϵx[i] = main_Wave1D_Conventional(Δxv[i], Δt, Ncx[i], nt, L)
 end

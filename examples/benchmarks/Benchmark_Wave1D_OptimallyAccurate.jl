@@ -5,16 +5,19 @@ import Statistics: mean
 # Dynamic dispatch based on a rule
 _type(rule) = Val{rule}()
 Analytics(rule, x)                 = _func(_type(rule), x) 
-_func(::Val{:dAlembert}       , x) = Wave1D_dAlembert(x)
+_func(::Val{:dAlembert},        x) = Wave1D_dAlembert(x)
 _func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
+_func(::Val{:Source},           x) = Wave1D_Source(x)
+
 
 # Problem type
 problem = :dAlembert
-# problem = :HeteroPlusSource
+problem = :HeteroPlusSource
+problem = :Source
 
 noisy =  false
 
-function Residual_OSOA!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
+function Residual_OSOA!(F, U, U0, U00, f, G, Gc, ρ, Δx, Δt, x, t)
     ncx = length(F)
     for i in eachindex(U)
 
@@ -71,16 +74,42 @@ function Residual_OSOA!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
         # u  = @SVector([UW00; UC00; UE00; UW0; UC0; UE0; UW; UC; UE])
         # F[i] = ρ/Δt^2*Mt'*u  - E/Δx^2*Mx'u
 
-        # Conventional - style 2:
+        # Optimised - style 2:
         Mt = @SVector([1/12;     10/12;          1/12;    -2/12;    -20/12;           -2/12;     1/12;    10/12;           1/12]) 
         Mx = @SVector([1/12*GW; -2/12*(GW+GE)/2; 1/12*GE; 10/12*GW; -20/12*(GW+GE)/2; 10/12*GE;  1/12*GW; -2/12*(GW+GE)/2; 1/12*GE])
+
+        if i==1
+            gW = Gc[1]
+        else
+            gW = Gc[i-1]
+        end
+
+        if i==ncx
+            gE = Gc[end]
+        else
+            gE = Gc[i+1]
+        end
+
+        gC = Gc[i]
+
+        # if i==2 
+        #     println(1)
+        #     display(  @SVector([1/12*GW; -2/12*(GW+GE)/2; 1/12*GE; 10/12*GW; -20/12*(GW+GE)/2; 10/12*GE;  1/12*GW; -2/12*(GW+GE)/2; 1/12*GE]) )
+        #     println(2)
+
+        #     display(  @SVector([1/24*(gW+gC); -1/24*(2*gC+gE+gW); 1/24*(gE+gC); 10/24*(gW+gC); -10/24*(2*gC+gE+gW); 10/24*(gE+gC); 1/24*(gW+gC); -1/24*(2*gC+gE+gW); 1/24*(gE+gC)]) )
+        #     error()
+        # end
+
+        Mx = @SVector([1/24*(gW+gC); -1/24*(2*gC+gE+gW); 1/24*(gE+gC); 10/24*(gW+gC); -10/24*(2*gC+gE+gW); 10/24*(gE+gC); 1/24*(gW+gC); -1/24*(2*gC+gE+gW); 1/24*(gE+gC)]) 
+
         u  = @SVector([UW00; UC00; UE00; UW0; UC0; UE0; UW; UC; UE])
         F[i] = ρ[i]/Δt^2*Mt'*u  - 1/Δx^2*Mx'u - f[i]
     end
     return nothing
 end
 
-Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)  = Residual_OSOA!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
+Residual!(F, U, U0, U00, f, G, Gc, ρ, Δx, Δt, x, t)  = Residual_OSOA!(F, U, U0, U00, f, G, Gc, ρ, Δx, Δt, x, t)
 
 function main_Wave1D_OSOA(Δx, Δt, ncx, nt, L)
 
@@ -113,13 +142,13 @@ function main_Wave1D_OSOA(Δx, Δt, ncx, nt, L)
         ρ[i]  = sol.ρ
     end
 
-    # If we assume tat coefficient is defined on the U points, then one has to introduce averaging
-    G[2:end-1] .= 0.5*(Gc[1:end-1] .+ Gc[2:end])
+    # # If we assume that coefficient is defined on the U points, then one has to introduce averaging
+    # G[2:end-1] .= 0.5*(Gc[1:end-1] .+ Gc[2:end])
 
     # Sparsity pattern
     input       = rand(ncx)
     output      = similar(input)
-    Res_closed! = (F, U) -> Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
+    Res_closed! = (F, U) -> Residual!(F, U, U0, U00, f, G, Gc, ρ, Δx, Δt, x, t)
     sparsity    = Symbolics.jacobian_sparsity(Res_closed!, output, input)
     J           = Float64.(sparse(sparsity))
 
@@ -143,15 +172,25 @@ function main_Wave1D_OSOA(Δx, Δt, ncx, nt, L)
 
         for i in eachindex(f)
             sol   = Analytics(problem, @SVector([xc[i]; t-Δt])) # ???
-            f[i]  = sol.s
+            fC    = sol.s 
+            sol   = Analytics(problem, @SVector([xc[i]-Δx; t-Δt]))
+            fW    = sol.s 
+            sol   = Analytics(problem, @SVector([xc[i]+Δx; t-Δt]))
+            fE    = sol.s 
+            sol   = Analytics(problem, @SVector([xc[i]; t-2*Δt]))
+            fS    = sol.s 
+            sol   = Analytics(problem, @SVector([xc[i]; t-0*Δt]))
+            fN    = sol.s 
+            f[i]  = fC - 1*( 4*fC - fW - fE - fS - fN )/12
+
         end
 
         r1 = 1.0
         for iter=1:10
 
             # Residual evaluation: T is found if F = 0
-            Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
-            Res_closed! = (F, U) -> Residual!(F, U, U0, U00, f, G, ρ, Δx, Δt, x, t)
+            Residual!(F, U, U0, U00, f, G, Gc, ρ, Δx, Δt, x, t)
+            Res_closed! = (F, U) -> Residual!(F, U, U0, U00, f, G, Gc, ρ, Δx, Δt, x, t)
             r = norm(F)/ncx
             if iter==1 r1 = r; end
             noisy==true ? @printf("## Iteration %06d: r/r1 = %1.2e ##\n", iter, r/r1) : nothing
@@ -186,35 +225,40 @@ end
 
 function ConvergenceAnalysis()
 
-    L   = 1.0
+    L   = 2.0
     tt  = 0.2
 
     ρ   = 1.0 # Indicative values
     G   = 1.0 # Indicative values
+    C   = 1/100
+
+    # Space
+    nt  = 100
+    Ncx = [40, 80, 160, 320]  
+    Δxv = L ./ Ncx
+    ϵx  = zero(Δxv)
+    Δt = 0.045175395145262566
+    for i in eachindex(Ncx)
+        @show Δt    = Δxv[i]^(1/2)/sqrt(G/ρ)/2.1 *1.2 
+        # Δt = 0.03549314249999666 /2^(i-1)
+        @show nt    = Int64(floor(tt/Δt))
+        ϵx[i] = main_Wave1D_OSOA(Δxv[i], Δt, Ncx[i], nt, L)
+    end
+
+    @show ϵx
 
     # Time
     ncx = 400
     Δx  = L/ncx
-    Nt  = [80, 160, 320, 640]    
+    Nt  = [40, 80, 160, 320]    
     Δtv = 0.01 ./ Nt
     ϵt  = zero(Δtv)
     for i in eachindex(Nt)
-        Δx    = 2.1 * (Δtv[i]*sqrt(G/ρ)) * 100 # Somehow dx has to be large for proper dt
-        ncx   = Int64(floor(L/Δx))
+
+        Δx    = 2.1 * (Δtv[i]*sqrt(G/ρ)) *1000 # Somehow dx has to be large for proper dt
+        @show ncx   = Int64(floor(L/Δx))
         L     = ncx*Δx
         ϵt[i] = main_Wave1D_OSOA(Δx, Δtv[i], ncx, Nt[i], L)
-    end
-
-    # Space
-    L   = 2.
-    nt  = 100
-    Ncx = [160, 320, 640]  
-    Δxv = 2.0 ./ Ncx
-    ϵx  = zero(Δtv)
-    for i in eachindex(Ncx)
-        Δt    = Δxv[i]/sqrt(G/ρ)/2.1 / 20
-        nt    = Int64(floor(tt/Δt))
-        ϵx[i] = main_Wave1D_OSOA(Δxv[i], Δt, Ncx[i], nt, L)
     end
 
     p1 = plot(xlabel="log10(1/Δx)", ylabel="log10(ϵx)")
@@ -222,6 +266,7 @@ function ConvergenceAnalysis()
     p1 = plot!( log10.( 1.0./Δxv ), log10.(ϵx[1]) .- 1.0* ( log10.( 1.0./Δxv ) .- log10.( 1.0./Δxv[1] ) ), label="O1"  ) 
     p1 = plot!( log10.( 1.0./Δxv ), log10.(ϵx[1]) .- 2.0* ( log10.( 1.0./Δxv ) .- log10.( 1.0./Δxv[1] ) ), label="O2"  ) 
     p1 = plot!( log10.( 1.0./Δxv ), log10.(ϵx[1]) .- 4.0* ( log10.( 1.0./Δxv ) .- log10.( 1.0./Δxv[1] ) ), label="O4"  ) 
+    p1 = plot!( log10.( 1.0./Δxv ), log10.(ϵx[1]) .- 8.0* ( log10.( 1.0./Δxv ) .- log10.( 1.0./Δxv[1] ) ), label="O8"  ) 
 
     p2 = plot(xlabel="log10(1/Δt)", ylabel="log10(ϵt)")
     p2 = scatter!( log10.( 1.0./Δtv ), log10.(ϵt), label="ϵ")

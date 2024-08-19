@@ -8,6 +8,9 @@ export Wave1D_dAlembert
 include("Wave1D/Wave1D_HeteroPlusSource.jl")
 export Wave1D_HeteroPlusSource
 
+include("Wave1D/Wave1D_Source.jl")
+export Wave1D_Source
+
 include("Diffusion1D/Diffusion1D_Gaussian.jl")
 export Diffusion1D_Gaussian
 
