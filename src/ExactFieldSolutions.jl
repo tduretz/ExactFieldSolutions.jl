@@ -18,8 +18,10 @@ include("Diffusion2D/Diffusion2D_Gaussian.jl")
 export Diffusion2D_Gaussian
 
 include("Poisson2D/Poisson2D_Sevilla2018.jl")
-# export Poisson2D_Sevilla2018_enz
 export Poisson2D_Sevilla2018
+
+include("Poisson2D/Poisson2D_VarCoeff.jl")
+export Poisson2D_VarCoeff
 
 include("Poisson3D/Poisson3D_Sevilla2018.jl")
 export Poisson3D_Sevilla2018
