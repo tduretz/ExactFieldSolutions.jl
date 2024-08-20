@@ -2,7 +2,7 @@ using Plots, SparseArrays, Symbolics, SparseDiffTools, Printf, StaticArrays, Exa
 import LinearAlgebra: norm
 import Statistics: mean
 
-function Residual_5point!(F, T, f, k, Δ, Xc)
+function Residual_Poisson2D!(F, T, f, k, Δ, Xc)
     ncx, ncy = size(T,1), size(T,2)
     for j = 1:ncy, i=1:ncx
 
@@ -17,12 +17,14 @@ function Residual_5point!(F, T, f, k, Δ, Xc)
         if (i==1)
             # West boundary
             sol   = Poisson2D_Sevilla2018( @SVector([Xc.x[i]-Δ.x; Xc.y[j]]) )
+            fW    = sol.s
             TW    = sol.u
             sol   = Poisson2D_Sevilla2018( @SVector([Xc.x[i]-Δ.x; Xc.y[j]-Δ.y]) )
             TSW   = sol.u
             sol   = Poisson2D_Sevilla2018( @SVector([Xc.x[i]-Δ.x; Xc.y[j]+Δ.y]) )
             TNW   = sol.u
         else
+            fW    = f[i-1,j]
             TW    = T[i-1,j]
             if j==1
                 sol   = Poisson2D_Sevilla2018( @SVector([Xc.x[i]-Δ.x; Xc.y[j]-Δ.y]) )
@@ -38,16 +40,17 @@ function Residual_5point!(F, T, f, k, Δ, Xc)
             end
         end
 
-
         if i==ncx
-            # West boundary
+            # East boundary
             sol   = Poisson2D_Sevilla2018( @SVector([Xc.x[i]+Δ.x; Xc.y[j]]) )
+            fE    = sol.s
             TE    = sol.u
             sol   = Poisson2D_Sevilla2018( @SVector([Xc.x[i]+Δ.x; Xc.y[j]-Δ.y]) )
             TSE   = sol.u
             sol   = Poisson2D_Sevilla2018( @SVector([Xc.x[i]+Δ.x; Xc.y[j]+Δ.y]) )
             TNE   = sol.u
         else
+            fE    = f[i+1,j]
             TE    = T[i+1,j]
             if j==1
                 sol   = Poisson2D_Sevilla2018( @SVector([Xc.x[i]+Δ.x; Xc.y[j]-Δ.y]) )
@@ -66,23 +69,34 @@ function Residual_5point!(F, T, f, k, Δ, Xc)
         if j==1
             # South boundary
             sol   = Poisson2D_Sevilla2018( @SVector([Xc.x[i]; Xc.y[j]-Δ.y]) )
+            fS    = sol.s
             TS    = sol.u
         else
+            fS    = f[i,j-1]
             TS    = T[i,j-1]
         end
         
         if j==ncy
             # North boundary
             sol   = Poisson2D_Sevilla2018( @SVector([Xc.x[i]; Xc.y[j]+Δ.y]) )
+            fN    = sol.s
             TN    = sol.u
         else
+            fN    = f[i,j+1]
             TN    = T[i,j+1]
         end
 
+        # Central point
+        fC = f[i,j]
         TC = T[i,j]
 
         # Balance equation 
         ii = i + (j-1)*ncx
+
+        # Stencil connections
+        u  = @SVector([TSW; TS; TSE; TW; TC; TE; TNW; TN; TNE])
+
+        # # 5-point classic with variable coefficient
         # qxW = -kW*(TC - TW)/Δ.x # West flux
         # qxE = -kE*(TE - TC)/Δ.x # East flux
         # qyS = -kS*(TC - TS)/Δ.y # South flux
@@ -92,24 +106,20 @@ function Residual_5point!(F, T, f, k, Δ, Xc)
         # # 5-point
         # Mx = @SVector([0.;     1.;          0.;    1.;   -4.;           1.;     0.;    1.;           0.]) 
 
-        # # 9-point
-        # Mx = @SVector([1/3;     1/3;          1/3;    1/3;   -8/3;           1/3;     1/3;    1/3;           1/3]) 
-       
         # Skewed 9-point
-        # Mx = @SVector([1/6;     4/6;          1/6;    4/6;   -20/6;          4/6;     1/6;    4/6;           1/6]) 
-
         Mx = @SVector([-1/12;     2/12;       -1/12;    -10/12;   20/12;    -10/12;    -1/12;     2/12;      -1/12]) 
         My = @SVector([-1/12;   -10/12;       -1/12;      2/12;   20/12;      2/12;    -1/12;   -10/12;      -1/12]) 
 
-        u  = @SVector([TSW; TS; TSE; TW; TC; TE; TNW; TN; TNE])
+        # Right-hand side with Laplacian term !
+        𝑓 = fC - ( 4*fC - fW - fE - fS - fN )/12
 
-        fC = f[i,j]
-        F[ii] = Mx'*u./Δ.x^2 + My'*u./Δ.y^2 - fC
+        # Residual
+        F[ii] = Mx'*u./Δ.x^2 + My'*u./Δ.y^2 - 𝑓
     end
     return nothing
 end
 
-Residual!(F, T, f, k, Δ, Xc) = Residual_5point!(F, T, f, k, Δ, Xc)
+Residual!(F, T, f, k, Δ, Xc) = Residual_Poisson2D!(F, T, f, k, Δ, Xc)
 
 function main(Δ, nc, L)
 
@@ -128,6 +138,13 @@ function main(Δ, nc, L)
     Ta  = zeros(nc.x, nc.y)
     k   = zeros(nc.x+1, nc.y+1) .+ ones(nc.x+1, nc.y+1)
 
+    # Initial condition: Evaluate exact initial solution
+    for j=1:nc.y, i=1:nc.x 
+        sol     = Poisson2D_Sevilla2018( @SVector([xc[i]; yc[j]]) )
+        Ta[i,j] = sol.u
+        f[i,j]  = sol.s 
+    end
+
     # Sparsity pattern
     input       = rand(nc.x, nc.y)
     output      = similar(input)
@@ -138,30 +155,13 @@ function main(Δ, nc, L)
     # Makes coloring
     colors      = matrix_colors(J)
 
-    # Initial condition: Evaluate exact initial solution
-    for j=1:nc.y, i=1:nc.x 
-        sol     = Poisson2D_Sevilla2018( @SVector([xc[i]; yc[j]]) )
-        Ta[i,j] = sol.u
-        fC      = sol.s 
-        sol     = Poisson2D_Sevilla2018( @SVector([xc[i]-Δ.x; yc[j]]) )
-        fW      = sol.s 
-        sol     = Poisson2D_Sevilla2018( @SVector([xc[i]+Δ.x; yc[j]]) )
-        fE      = sol.s 
-        sol     = Poisson2D_Sevilla2018( @SVector([xc[i]; yc[j]-Δ.y]) )
-        fS      = sol.s 
-        sol     = Poisson2D_Sevilla2018( @SVector([xc[i]; yc[j]+Δ.y]) )
-        fN      = sol.s 
-        f[i,j]  = fC - ( 4*fC - fW - fE - fS - fN )/12
-    end
-
     @show  r = norm(F)/nc.x
     
     # Time loop
-
     for iter=1:10
 
         # Residual evaluation: T is found if F = 0
-        Residual_5point!(F, T, f, k, Δ, Xc)
+        Residual!(F, T, f, k, Δ, Xc)
         Res_closed! = (F, T) -> Residual!(F, T, f, k, Δ, Xc)
         r = norm(F)/length(F)
         @printf("## Iteration %06d: r = %1.2e ##\n", iter, r)
@@ -187,7 +187,7 @@ function ConvergenceAnalysis()
 
     # Space
     L   = (x=1., y=1.)
-    Ncx = [20, 40, 80, 160]  
+    Ncx = [20, 40, 80]  
     Δxv = L.x ./ Ncx
     ϵx  = zero(Δxv)
     for i in eachindex(Ncx)
