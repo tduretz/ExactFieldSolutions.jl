@@ -1,13 +1,13 @@
 function Poisson2D_VarCoeff_u_fwd(x)
-    u = 0.0
+    u = cos(x[1])*cos(x[2])
     return u
 end
 
 function Poisson2D_VarCoeff_coeff(x)
-    β = 1.0 
-    r = 0.5
-    σ = 0.1
-    a = sqrt(x[1]^2 + x[2]^2) - r
+    β    = 1.0 
+    r    = 0.5
+    σ    = 0.1
+    a    = sqrt(x[1]^2 + x[2]^2) - r
     logβ = 2*erf(-(a/σ) )  
     β    = 10^logβ
     return β

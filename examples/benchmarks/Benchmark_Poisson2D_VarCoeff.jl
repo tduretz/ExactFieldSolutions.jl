@@ -107,9 +107,9 @@ function Residual_Poisson2D!(F, T, f, k, Δ, Xc)
         # Stencil connections
         u  = @SVector([TSW; TS; TSE; TW; TC; TE; TNW; TN; TNE])
 
-        # # 5-point
-        # Mx = @SVector([0.;     0.;          0.;    -kW;   (kW+kE);           -kE;     0.;    0.;           0.]) 
-        # My = @SVector([0.;    -kS;          0.;     0.;   (kS+kN);            0.;     0.;   -kN;           0.]) 
+        # 5-point
+        Mx = @SVector([0.;     0.;          0.;    -kW;   (kW+kE);           -kE;     0.;    0.;           0.]) 
+        My = @SVector([0.;    -kS;          0.;     0.;   (kS+kN);            0.;     0.;   -kN;           0.]) 
 
         # Skewed 9-point
         Mx = @SVector([-kWS/12;   (kWS+kES)/12;   -kES/12;       -10*kW/12;   10*(kW+kE)/12;     -10*kE/12;    -kWN/12;   (kWN+kEN)/12;    -kEN/12]) 
