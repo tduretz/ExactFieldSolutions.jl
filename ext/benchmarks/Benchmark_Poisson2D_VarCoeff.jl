@@ -115,8 +115,25 @@ function Residual_Poisson2D!(F, T, f, k, Δ, Xc)
         Mx = @SVector([-kWS/12;   (kWS+kES)/12;   -kES/12;       -10*kW/12;   10*(kW+kE)/12;     -10*kE/12;    -kWN/12;   (kWN+kEN)/12;    -kEN/12]) 
         My = @SVector([-kSW/12;      -10*kS/12;   -kSE/12;    (kSW+kNW)/12;   10*(kS+kN)/12;  (kSE+kNE)/12;    -kNW/12;      -10*kN/12;    -kNE/12]) 
 
+        # Mx = @SVector([-kW/12;   2(kW)/12;   -kW/12;       -10*kW/12;   10*(kW+kE)/12;     -10*kE/12;    -kE/12;   2(kE)/12;    -kE/12]) 
+        # My = @SVector([-kS/12;      -10*kS/12;   -kN/12;    2(kS)/12;   10*(kS+kN)/12;  2(kN)/12;    -kS/12;      -10*kN/12;    -kN/12]) 
+
+
+        # K =  kW + kE
+        # Mx = @SVector([           
+        #     -kS .* kW ./ (3 * K);   kW .* (kN + kS) ./ (3 * K);    -kN .* kW ./ (3 * K);
+        #     -kW + kS .* (kE + kW) ./ (3 * K); kE + kW - (kE + kW) .* (kN + kS) ./ (3 * K);     -kE + kN .* (kE + kW) ./ (3 * K); -kE .* kS ./ (3 * K);                  kE .* (kN + kS) ./ (3 * K);             -kE .* kN ./ (3 * K);]) 
+        # K =  kN + kS
+        # My = @SVector([
+        #     -kS .* kW ./ (3 * K);  -kS + kW .* (kN + kS) ./ (3 * K);   -kN .* kW ./ (3 * K);
+        #      kS .* (kE + kW) ./ (3 * K);      kN + kS - (kE + kW) .* (kN + kS) ./ (3 * K);      kN .* (kE + kW) ./ (3 * K);
+        #      -kE .* kS ./ (3 * K);            -kN + kE .* (kN + kS) ./ (3 * K);       -kE .* kN ./ (3 * K)]
+        # ) 
+
+
         # Right-hand side with Laplacian term !
         𝑓 = fC - ( 4*fC - fW - fE - fS - fN )/12
+        # 𝑓 = fC - ( - ( kE*(fE - fC) - kW*(fC - fW) ) - ( kN*(fN - fC) - kS*(fC - fS) ) )/12
 
         # Residual
         F[ii] = Mx'*u./Δ.x^2 + My'*u./Δ.y^2 - 𝑓
@@ -206,7 +223,7 @@ function ConvergenceAnalysis()
 
     # Space
     L   = (x=2., y=2.)
-    Ncx = [40, 80, 160]  
+    Ncx = [40, 80]#, 160]  
     Δxv = L.x ./ Ncx
     ϵx  = zero(Δxv)
     for i in eachindex(Ncx)

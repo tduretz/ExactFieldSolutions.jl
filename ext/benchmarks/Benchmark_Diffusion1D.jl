@@ -14,7 +14,7 @@ function Residual_BackwardEuler!(F, T, T0, k, ρ, Cp, Δx, Δt, x, t)
         end
         # East boundary
         if i==ncx
-            sol   = Diffusion1D_Gaussian([x.min+Δx/2.0; t]; params )
+            sol   = Diffusion1D_Gaussian([x.max+Δx/2.0; t]; params )
             Ta = sol.u
             qxE = -k*(Ta - T[i])/Δx
         end
@@ -50,11 +50,11 @@ function Residual_CrankNicolson!(F, T, T0, k, ρ, Cp, Δx, Δt, x, t, θ)
         # East boundary
         if i==ncx
             # Previous step
-            sol   = Diffusion1D_Gaussian([x.min+Δx/2.0; t-Δt]; params )
+            sol   = Diffusion1D_Gaussian([x.max+Δx/2.0; t-Δt]; params )
             Ta    = sol.u
             qxE0  = -k*(Ta - T0[i])/Δx
             # Next step
-            sol   = Diffusion1D_Gaussian([x.min+Δx/2.0; t]; params )
+            sol   = Diffusion1D_Gaussian([x.max+Δx/2.0; t]; params )
             Ta    = sol.u
             qxE   = -k*(Ta - T[i])/Δx
         end

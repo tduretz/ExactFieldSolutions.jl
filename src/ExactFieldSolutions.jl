@@ -17,6 +17,9 @@ export Diffusion1D_Gaussian
 include("Diffusion2D/Diffusion2D_Gaussian.jl")
 export Diffusion2D_Gaussian
 
+include("Poisson1D/Poisson1D_VarCoeff.jl")
+export Poisson1D_VarCoeff
+
 include("Poisson2D/Poisson2D_Sevilla2018.jl")
 export Poisson2D_Sevilla2018
 
