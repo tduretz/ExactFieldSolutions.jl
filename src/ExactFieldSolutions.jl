@@ -1,6 +1,15 @@
 module ExactFieldSolutions
 
-using Plots, SpecialFunctions, ForwardDiff, UnPack, StaticArrays
+using Plots, SpecialFunctions, ForwardDiff, UnPack, StaticArrays, Printf
+
+include("Wave1D/Wave1D_dAlembert.jl")
+export Wave1D_dAlembert
+
+include("Wave1D/Wave1D_HeteroPlusSource.jl")
+export Wave1D_HeteroPlusSource
+
+include("Wave1D/Wave1D_Source.jl")
+export Wave1D_Source
 
 include("Diffusion1D/Diffusion1D_Gaussian.jl")
 export Diffusion1D_Gaussian
@@ -8,9 +17,14 @@ export Diffusion1D_Gaussian
 include("Diffusion2D/Diffusion2D_Gaussian.jl")
 export Diffusion2D_Gaussian
 
+include("Poisson1D/Poisson1D_VarCoeff.jl")
+export Poisson1D_VarCoeff
+
 include("Poisson2D/Poisson2D_Sevilla2018.jl")
-# export Poisson2D_Sevilla2018_enz
 export Poisson2D_Sevilla2018
+
+include("Poisson2D/Poisson2D_VarCoeff.jl")
+export Poisson2D_VarCoeff
 
 include("Poisson3D/Poisson3D_Sevilla2018.jl")
 export Poisson3D_Sevilla2018

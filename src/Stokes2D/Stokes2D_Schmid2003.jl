@@ -62,7 +62,7 @@ end
 Evaluates the analytical solution of [Schmid & Podladchikov (2003)](https://academic.oup.com/gji/article/155/1/269/713923):
 
     x      : is the coordinate vector 
-    params : optional parameter array
+    params : optional parameter array (mm = 1.0, mc = 100, rc = 0.2, gr = 0.0, er =-1.0)
 and returns:
 
     sol    : tuple containing the solution fields p (pressure), V (velocity vector), L (velocity gratdient tensor), ε̇ (deviatoric strain rate tensor) and τ (deviatoric stress tensor)
