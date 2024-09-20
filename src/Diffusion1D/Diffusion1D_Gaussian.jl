@@ -9,7 +9,7 @@ end
 
 Evaluates the manufactured solution of an initial 1D Gaussian anomaly:
 
-    x      : is the coordinate and time vector, x[1] is space and x[2] is time 
+    x      : is the coordinate and time vector or tuple, x[1] is space and x[2] is time 
     params : optional parameter array, default: (T0 = 100., K = 1e-6, σ = 0.1 ) 
 and returns:
 
@@ -37,4 +37,11 @@ function Diffusion1D_Gaussian(x;
     hessu  = ForwardDiff.hessian(f_cl, x)
     s      = gradu[2] - params.K*(hessu[1,1])
     return (u=u, ∇u=gradu, s=s)
+end
+
+function Diffusion1D_Gaussian(coords::Tuple;
+    params = (T0 = 100., K = 1e-6, σ = 0.1 ) )
+    X = SVector(values(coords)...)
+    sol = Diffusion1D_Gaussian(X; params)
+    return (u=sol.u, ∇u =(x=sol.∇u), s=sol.s )
 end

@@ -8,8 +8,8 @@
     η = exp(2*B*x[2])
     
     Input parameters are:
-    x      : is the coordinate vector 
-    params : optional parameter array
+    x      : is the coordinate vector or tuple
+    params : optional parameter array, default = (Δη=1e6, B = 6.9, km = 1.6*π, n = 3, σ = 1.0)
 and returns:
 
     sol    : tuple containing the solution fields p (pressure), V (velocity vector), ρ (density) and η (viscosity)
@@ -18,6 +18,11 @@ and returns:
 ```julia-repl
 julia> Stokes2D_SolKz_Zhong1996([0; 0])
 (p = -0.017494712727797308, V = [0.0, 0.0], ρ = 0.0, η = 1.0)
+```
+
+```julia-repl
+julia> Stokes2D_SolKz_Zhong1996((0,0))
+(p = -0.017494712727797308, V = (x = 0.0, y = 0.0), η = 1.0, ρ = 0.0)
 ```
 """
 function Stokes2D_SolKz_Zhong1996(x; 
@@ -440,4 +445,11 @@ function Stokes2D_SolKz_Zhong1996(x;
     η   = exp( 2.0 * B * x[2] );
     
     return ( p=p, V=[vx, vz], ρ=ρ, η=η)
+end
+
+function Stokes2D_SolKz_Zhong1996(coords::Tuple;
+    params = (Δη=1e6, B = 6.9, km = 1.6*π, n = 3, σ = 1.0  ) )
+    X = SVector(values(coords)...)
+    sol = Stokes2D_SolKz_Zhong1996(X; params)
+    return (p=sol.p, V=(x=sol.V[1], y=sol.V[2]), η=sol.η, ρ=sol.ρ) 
 end

@@ -61,8 +61,8 @@ end
 
 Evaluates the analytical solution of [Schmid & Podladchikov (2003)](https://academic.oup.com/gji/article/155/1/269/713923):
 
-    x      : is the coordinate vector 
-    params : optional parameter array (mm = 1.0, mc = 100, rc = 0.2, gr = 0.0, er =-1.0)
+    x      : is the coordinate vector or tuple
+    params : optional parameter array, default (mm = 1.0, mc = 100, rc = 0.2, gr = 0.0, er =-1.0)
 and returns:
 
     sol    : tuple containing the solution fields p (pressure), V (velocity vector), L (velocity gratdient tensor), ε̇ (deviatoric strain rate tensor) and τ (deviatoric stress tensor)
@@ -71,6 +71,10 @@ and returns:
 ```julia-repl
 julia> Stokes2D_Schmid2003( [0, 0] )
 (p = 0.0, V = [0.0, 0.0], L = [-0.019801980198019802 0.0; 0.0 0.019801980198019802], ε̇ = [-0.019801980198019802 0.0; 0.0 0.019801980198019802], τ = [-3.9603960396039604 0.0; 0.0 3.9603960396039604])
+```
+```julia-repl
+julia> Stokes2D_Schmid2003( (0, 0) )
+(p = 0.0, V = (x = 0.0, y = 0.0), L = (xx = -0.019801980198019802, xy = 0.0, yx = 0.0, yy = 0.019801980198019802), ε̇ = (xx = -0.019801980198019802, xy = 0.0, yx = 0.0, yy = 0.019801980198019802), τ = (xx = -3.9603960396039604, xy = 0.0, yx = 0.0, yy = 3.9603960396039604), η = 100)
 ```
 """
 function Stokes2D_Schmid2003(x;
@@ -86,4 +90,16 @@ function Stokes2D_Schmid2003(x;
     (x[1]^2 + x[2]^2) < params.rc^2 ? η=params.mc : η=params.mm
     τ = 2*η*ε̇
     return (p=p, V=v, L=L, ε̇=ε̇, τ=τ, η=η)
+end
+
+function Stokes2D_Schmid2003(coords::Tuple;
+    params = (mm = 1.0, mc = 100, rc = 0.2, gr = 0.0, er =-1.0) )
+    X = SVector(values(coords)...)
+    sol = Stokes2D_Schmid2003(X; params)
+    return (p=sol.p, 
+    V=(x=sol.V[1], y=sol.V[2]),
+    L=(xx=sol.L[1,1], xy=sol.L[1,2], yx=sol.L[2,1], yy=sol.L[2,2]), 
+    ε̇=(xx=sol.ε̇[1,1], xy=sol.ε̇[1,2], yx=sol.ε̇[2,1], yy=sol.ε̇[2,2]), 
+    τ=(xx=sol.τ[1,1], xy=sol.τ[1,2], yx=sol.τ[2,1], yy=sol.τ[2,2]),
+    η=sol.η) 
 end

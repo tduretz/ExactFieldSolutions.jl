@@ -8,8 +8,8 @@ end
 
 Evaluates the manufactured solution of an initial 1D wave:
 
-    x      : is the coordinate and time vector, x[1] is space and x[2] is time 
-    params : optional parameter tuple, default: (ρ=2.0, k=8.0, G=1.0) 
+    x      : is the coordinate and time vector or tuple, x[1] is space and x[2] is time 
+    params : optional parameter tuple, default, default = (ρ=2.0, k=8.0, G=1.0) 
 and returns:
 
     sol    : tuple containing the solution fields u, ∇u and the source term s = -Δu 
@@ -27,6 +27,10 @@ julia> params = (ρ = 200.0, k = 80.0, G = 0.5)
 julia> Wave1D_dAlembert([0 2]; params)
 (u = -0.14550003380861354, ∇u = [79.14865972987054 -3.957432986493527], s = -4.440892098500626e-16, G = 0.5, ρ = 200.0)
 ```
+```julia-repl
+julia> Wave1D_dAlembert((0, 2); params)
+(u = -0.14550003380861354, ∇u = (x = 79.14865972987054, t = -3.957432986493527), s = -4.440892098500626e-16, G = 0.5, ρ = 200.0)
+```
 """
 function Wave1D_dAlembert(x;
     params = (ρ=2.0, k=8.0, G=1.0) )
@@ -37,4 +41,11 @@ function Wave1D_dAlembert(x;
     hessu  = ForwardDiff.hessian(f_cl, x)
     s      = hessu[2,2] - c^2*(hessu[1,1])
     return (u=u, ∇u=gradu, s=s, G=params.G, ρ=params.ρ)
+end
+
+function Wave1D_dAlembert(coords::Tuple;
+    params = (ρ=2.0, k=8.0, G=1.0) )
+    X = SVector(values(coords)...)
+    sol = Wave1D_dAlembert(X; params)
+    return (u=sol.u, ∇u =(x=sol.∇u[1],t=sol.∇u[2]), s=sol.s, G=params.G, ρ=params.ρ )
 end

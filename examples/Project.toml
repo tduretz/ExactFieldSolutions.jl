@@ -1,0 +1,10 @@
+name = "examples"
+uuid = "a4ce6032-2752-4223-acf8-18f375a93323"
+authors = ["tduretz <duretz@uni-frankfurt.de>"]
+version = "0.1.0"
+
+[deps]
+ExactFieldSolutions = "2a6b1ac7-2de5-4354-bffb-bf009f6a4bef"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
+UnPack = "3a884ed6-31ef-47d7-9d2a-63182c4928ed"
