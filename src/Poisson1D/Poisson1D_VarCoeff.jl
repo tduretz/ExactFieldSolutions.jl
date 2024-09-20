@@ -50,7 +50,7 @@ function Poisson1D_VarCoeff(x)
     return (u=u, ∇u=∂u∂x, q=q, s=s, β=Poisson1D_VarCoeff_coeff(x))
 end
 
-function Poisson1D_VarCoeff(coords::Tuple)
+function Poisson1D_VarCoeff(coords::Union{Tuple, NamedTuple})
     X = SVector(values(coords)...)
     sol = Poisson1D_VarCoeff(X)
     return (u=sol.u, q =(x=sol.q[1], y=sol.q[2]), s=sol.s, β=sol.β )

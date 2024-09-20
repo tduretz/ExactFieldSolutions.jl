@@ -43,7 +43,7 @@ function Elasticity2D_Hole(x;
     return (p= Pt, τ=[Txx Txy; Txy Tyy])
 end
 
-function Elasticity2D_Hole(coords::Tuple;
+function Elasticity2D_Hole(coords::Union{Tuple, NamedTuple};
     params = (r0 = 0.2, P_inf = 1e-2, P0 = -1e-2, tau_inf = -1e-2) )
     X = SVector(values(coords)...)
     sol = Elasticity2D_Hole(X; params)

@@ -3687,7 +3687,7 @@ function SolCx_solution(x, z, ηA, ηB)
     return (;  V=[vx, vz], p)
 end
 
-function Stokes2D_SolCx_Zhong1996(coords::Tuple;
+function Stokes2D_SolCx_Zhong1996(coords::Union{Tuple, NamedTuple};
     params=(; ηA=1, ηB=2) )
     X = SVector(values(coords)...)
     sol = Stokes2D_SolCx_Zhong1996(X; params)

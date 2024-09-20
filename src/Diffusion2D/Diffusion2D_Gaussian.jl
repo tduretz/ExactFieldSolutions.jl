@@ -35,7 +35,7 @@ function Diffusion2D_Gaussian(x;
     return (u=u, ∇u=gradu, s=s)
 end
 
-function Diffusion2D_Gaussian(coords::Tuple;
+function Diffusion2D_Gaussian(coords::Union{Tuple, NamedTuple};
     params = (T0 = 100., K = 1e-6, σ = 0.1 ) )
     X = SVector(values(coords)...)
     sol = Diffusion2D_Gaussian(X; params)

@@ -92,7 +92,7 @@ function Stokes2D_Schmid2003(x;
     return (p=p, V=v, L=L, ε̇=ε̇, τ=τ, η=η)
 end
 
-function Stokes2D_Schmid2003(coords::Tuple;
+function Stokes2D_Schmid2003(coords::Union{Tuple, NamedTuple};
     params = (mm = 1.0, mc = 100, rc = 0.2, gr = 0.0, er =-1.0) )
     X = SVector(values(coords)...)
     sol = Stokes2D_Schmid2003(X; params)

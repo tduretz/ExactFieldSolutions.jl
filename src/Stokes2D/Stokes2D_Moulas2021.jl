@@ -219,7 +219,7 @@ function Stokes2D_Moulas2021(X;
     return (p=p, V=v, L=L, ε̇=ε̇, τ=τ, η=η)
 end
 
-function Stokes2D_Moulas2021(coords::Tuple;
+function Stokes2D_Moulas2021(coords::Union{Tuple, NamedTuple};
     params = (
         θ1  =  30π/180, 
         θ2  = 180π/180, 

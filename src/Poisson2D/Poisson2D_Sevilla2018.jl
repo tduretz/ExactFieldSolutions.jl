@@ -73,7 +73,7 @@ end
 #     return (u=u, ∂u∂x=gradu[1][1], ∂u∂y=gradu[1][2], s=s)
 # end
 
-function Poisson2D_Sevilla2018(coords::Tuple;
+function Poisson2D_Sevilla2018(coords::Union{Tuple, NamedTuple};
     params = (α = 0.1, β = 0.3, a = 5.1, b = 4.3, c = -6.2, d = 3.4) )
     X = SVector(values(coords)...)
     sol = Poisson2D_Sevilla2018(X; params)

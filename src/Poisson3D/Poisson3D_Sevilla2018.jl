@@ -35,7 +35,7 @@ function Poisson3D_Sevilla2018(x;
     return (u=u, ∇u=gradu, s=s)
 end
 
-function Poisson3D_Sevilla2018(coords::Tuple;
+function Poisson3D_Sevilla2018(coords::Union{Tuple, NamedTuple};
     params = (α = 0.1, β = 0.3, a = 5.1, b = 4.3, c = -6.2, d = 3.4, e = 1.8, f = 1.7) )
     X = SVector(values(coords)...)
     sol = Poisson3D_Sevilla2018(X)

@@ -67,7 +67,7 @@ function Stokes2D_Donea2003(X;
     return (p=p, V=v, L=L, ε̇=ε̇, τ=τ, s=s)
 end
 
-function Stokes2D_Donea2003(coords::Tuple;
+function Stokes2D_Donea2003(coords::Union{Tuple, NamedTuple};
     params = (η=1,) )
     X = SVector(values(coords)...)
     sol = Stokes2D_Donea2003(X; params)

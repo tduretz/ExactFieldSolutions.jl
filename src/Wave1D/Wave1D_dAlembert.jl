@@ -43,7 +43,7 @@ function Wave1D_dAlembert(x;
     return (u=u, ∇u=gradu, s=s, G=params.G, ρ=params.ρ)
 end
 
-function Wave1D_dAlembert(coords::Tuple;
+function Wave1D_dAlembert(coords::Union{Tuple, NamedTuple};
     params = (ρ=2.0, k=8.0, G=1.0) )
     X = SVector(values(coords)...)
     sol = Wave1D_dAlembert(X; params)

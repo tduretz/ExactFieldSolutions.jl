@@ -447,7 +447,7 @@ function Stokes2D_SolKz_Zhong1996(x;
     return ( p=p, V=[vx, vz], ρ=ρ, η=η)
 end
 
-function Stokes2D_SolKz_Zhong1996(coords::Tuple;
+function Stokes2D_SolKz_Zhong1996(coords::Union{Tuple, NamedTuple};
     params = (Δη=1e6, B = 6.9, km = 1.6*π, n = 3, σ = 1.0  ) )
     X = SVector(values(coords)...)
     sol = Stokes2D_SolKz_Zhong1996(X; params)
