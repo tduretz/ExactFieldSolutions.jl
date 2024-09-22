@@ -54,7 +54,7 @@ function main(ncx, method)
     if method==:Spotz         # Discretisation of Spotz et al., 1995
         for iter=1:10000
             # BC
-            # u[1]   = 2* 𝑢(-L/2)   - u[2]       # this is only second order -  do not use
+            # u[1]   = 2* 𝑢(-L/2)   - u[2]       # this is only second order - do not use
             # u[end] = 2* 𝑢( L/2)   - u[end-1]
             # b[1]   = 2*∇𝑞(-L/2,β) - b[2]       # this is OK as the Δb is anyway O(2)
             # b[end] = 2*∇𝑞( L/2,β) - b[end-1]
