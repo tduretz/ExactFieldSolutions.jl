@@ -6,7 +6,7 @@ import LinearAlgebra: norm
 𝑞(𝑥,𝛽)  = -𝛽*sin(𝑥) 
 ∇𝑞(𝑥,𝛽) = -𝛽*cos(𝑥)
 
-function main(ncx, method) 
+@views function main(ncx, method) 
 
     L   = 1.0 # Length
     β   = 1.0 # Constant coefficiant
