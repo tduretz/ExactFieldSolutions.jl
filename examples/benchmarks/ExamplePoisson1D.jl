@@ -51,7 +51,7 @@ import LinearAlgebra: norm
     Δτ = Δx^2/β/2.1 
     θ  = 0.038/Δx/1.6 
 
-    if method==:Spotz         # Discretisation of Spotz et al., 1995
+    if method===:Spotz         # Discretisation of Spotz et al., 1995
         for iter=1:10000
             # BC
             # u[1]   = 2* 𝑢(-L/2)   - u[2]       # this is only second order - do not use
