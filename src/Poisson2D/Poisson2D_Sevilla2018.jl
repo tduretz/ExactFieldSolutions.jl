@@ -1,4 +1,3 @@
-
 function Poisson2D_Sevilla2018_u_fwd(x, params)
     @unpack α, β, a, b, c, d = params
     return exp(α*sin(a*x[1] + c*x[2]) + β*cos(b*x[1] + d*x[2]))
@@ -9,8 +8,8 @@ end
 
 Evaluates the manufactured solution of [Sevilla et al. (2018)](https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.5833):
 
-    x      : is the coordinate vector 
-    params : optional parameter array
+    x      : is the coordinate vector or a tuple
+    params : optional parameter array, default = (α = 0.1, β = 0.3, a = 5.1, b = 4.3, c = -6.2, d = 3.4)
 and returns:
 
     sol    : tuple containing the solution fields u, ∇u and the source term s = -Δu 
@@ -20,23 +19,32 @@ and returns:
 julia> Poisson2D_Sevilla2018( [0, 0] )
 (u = 1.3498588075760032, ∇u = [0.6884279918637617, -0.8369124606971221], s = 11.298993148814933)
 ```
+```julia-repl
+julia> Poisson2D_Sevilla2018( (0., 0.) )
+(u = 1.3498588075760032, ∇u = (x = 0.6884279918637617, y = -0.8369124606971221), s = 11.298993148814933)
+```
 """
-function Poisson2D_Sevilla2018(x;
+function Poisson2D_Sevilla2018(x::SVector{2,Float64};
     params = (α = 0.1, β = 0.3, a = 5.1, b = 4.3, c = -6.2, d = 3.4) )
     u      = Poisson2D_Sevilla2018_u_fwd(x, params)
     f_cl   = x -> Poisson2D_Sevilla2018_u_fwd(x, params)
     gradu  = ForwardDiff.gradient(f_cl, x)
     hessu  = ForwardDiff.hessian(f_cl, x)
     s      = -(hessu[1,1] + hessu[2,2])
+    # @show Enzyme.gradient(Enzyme.Reverse, f_cl, x)
     # T = u
     # @unpack α, β, a, b, c, d = params
     # s = T*(-a*α*cos(a*x[1] + c*x[2]) + b*β*sin(b*x[1] + d*x[2]))*(a*α*cos(a*x[1] + c*x[2]) - b*β*sin(b*x[1] + d*x[2])) + T*(a^2*α*sin(a*x[1] + c*x[2]) + b^2*β*cos(b*x[1] + d*x[2])) + T*(-α*c*cos(a*x[1] + c*x[2]) + β*d*sin(b*x[1] + d*x[2]))*(α*c*cos(a*x[1] + c*x[2]) - β*d*sin(b*x[1] + d*x[2])) + T*(α*c^2*sin(a*x[1] + c*x[2]) + β*d^2*cos(b*x[1] + d*x[2]))
     return (u=u, ∇u=gradu, s=s)
 end
 
+# using ExactFieldSolutions
+# import Enzyme
+# Poisson2D_Sevilla2018([0,1])
+
 # I've tried to use Enzyme BUT:
 # 1) outputs are difficult gradient components end nested in complicated data structures (arrays of arrays or tuples of arrays)
-# 2) never managed to compute higher order derivatives
+# 2) never managed to compute higher order derivatives (hessian API missing)
 # 3) overall package compilation seemed much slower than with ForwardDiff
 
 # Poisson2D_Sevilla2018_gradu(x, y, params)   = autodiff(Reverse, Poisson2D_Sevilla2018_u, Active(x), Active(y), Const(params))
@@ -64,3 +72,10 @@ end
 #     # @show ∂2u∂y2[1][1]
 #     return (u=u, ∂u∂x=gradu[1][1], ∂u∂y=gradu[1][2], s=s)
 # end
+
+function Poisson2D_Sevilla2018(coords::Union{Tuple, NamedTuple};
+    params = (α = 0.1, β = 0.3, a = 5.1, b = 4.3, c = -6.2, d = 3.4) )
+    X = SVector(values(coords)...)
+    sol = Poisson2D_Sevilla2018(X; params)
+    return (u=sol.u, ∇u =(x=sol.∇u[1], y=sol.∇u[2]), s=sol.s )
+end

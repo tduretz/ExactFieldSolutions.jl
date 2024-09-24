@@ -12,6 +12,15 @@ Please note that `ExactFieldSolutions` is a registered package, so you can insta
 
 ## Visualisation examples
 
+It is necessary to activate the example environment in order to reproduce the visualisations and benchmarks, one can use the package mode for this purpose (`]`):
+
+```julia-repl
+(ExactFieldSolutions) pkg> activate examples/
+  Activating project at `~/REPO/ExactFieldSolutions/examples`
+
+(examples) pkg>
+```
+
 ### Poisson 2D
 [Sevilla et al. (2018)](ext/visualisations/Visualize_Poisson2D_Sevilla2018.jl)
 

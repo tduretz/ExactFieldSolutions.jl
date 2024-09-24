@@ -12,8 +12,8 @@
     end
     
     Input parameters are:
-    x      : is the coordinate vector 
-    params : optional parameter array
+    x      : is the coordinate vector or tuple
+    params : optional parameter array, default = (ηA=1, ηB=2)
 and returns:
 
     sol    : tuple containing the solution fields p (pressure) and V (velocity vector)
@@ -23,6 +23,11 @@ and returns:
 julia> Stokes2D_SolCx_Zhong1996( [0; 0] )
 (V = [0.0, 0.0], p = -0.18450665902742763)
 ```
+```julia-repl
+julia> Stokes2D_SolCx_Zhong1996( (0, 0) )
+(V = (x = 0.0, y = 0.0), p = -0.18450665902742763)
+```
+
 """
 function Stokes2D_SolCx_Zhong1996(x; params=(; ηA=1, ηB=2))
     sol = SolCx_solution(x[1], x[2], params.ηA, params.ηB)
@@ -3680,4 +3685,11 @@ function SolCx_solution(x, z, ηA, ηB)
     p = sum5
 
     return (;  V=[vx, vz], p)
+end
+
+function Stokes2D_SolCx_Zhong1996(coords::Union{Tuple, NamedTuple};
+    params=(; ηA=1, ηB=2) )
+    X = SVector(values(coords)...)
+    sol = Stokes2D_SolCx_Zhong1996(X; params)
+    return (V=(x=sol.V[1], y=sol.V[2]), p=sol.p) 
 end
