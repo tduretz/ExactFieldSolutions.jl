@@ -21,6 +21,8 @@ It is necessary to activate the example environment in order to reproduce the vi
 (examples) pkg>
 ```
 
+This functionality is temporary and will disappear oncee the upcoming [workspace](https://pkgdocs.julialang.org/dev/toml-files/#The-%5Bworkspace%5D-section) feature will be released. 
+
 ### Poisson 2D
 [Sevilla et al. (2018)](examples/visualisations/Visualize_Poisson2D_Sevilla2018.jl)
 
