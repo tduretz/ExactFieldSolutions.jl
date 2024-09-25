@@ -54,10 +54,10 @@ function Stokes2D_Schmid2003_L(x, params) # just to check if automatic derivativ
     dvydxinc = (gr*(mm - mc))/(2*(mm + mc));
     dvydyinc = -(2*er*mm)/(mm + mc);
     # Where it's needed
-    dvxdx      = (isinside==0)*dvxdxmat + (isinside==1)*dvxdxinc  
-    dvxdy      = (isinside==0)*dvxdymat + (isinside==1)*dvxdyinc 
-    dvydx      = (isinside==0)*dvydxmat + (isinside==1)*dvydxinc  
-    dvydy      = (isinside==0)*dvydymat + (isinside==1)*dvydyinc 
+    dvxdx    = (isinside==0)*dvxdxmat + (isinside==1)*dvxdxinc  
+    dvxdy    = (isinside==0)*dvxdymat + (isinside==1)*dvxdyinc 
+    dvydx    = (isinside==0)*dvydxmat + (isinside==1)*dvydxinc  
+    dvydy    = (isinside==0)*dvydymat + (isinside==1)*dvydyinc 
     return @SMatrix [dvxdx dvxdy; dvydx dvydy]
 end
 
