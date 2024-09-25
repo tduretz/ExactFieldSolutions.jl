@@ -1,5 +1,10 @@
 ## ExactFieldSolutions.jl
 
+<!-- [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliageodynamics.github.io/GeoParams.jl/dev/) -->
+[![CI](https://github.com/tduretz/ExactFieldSolutions.jl//actions/workflows/blank.yml/badge.svg)](https://github.com/tduretz/ExactFieldSolutions.jl//actions/workflows/blank.yml)
+<!-- [![DOI](https://zenodo.org/badge/369433137.svg)](https://zenodo.org/doi/10.5281/zenodo.8089230) -->
+[![codecov](https://codecov.io/gh/tduretz/ExactFieldSolutions.jl)](https://codecov.io/gh/tduretz/ExactFieldSolutions.jl)
+
 Full field solutions are essential for the verification of numerical codes that are based on the solution of Partial Differential Equations (PDE).
 They allow for checking if numerical solutions are meaningful in eyeball norm but, more importantly, they allow for the quantification of discretisation errors.
 This quantification further enables to check whether numerical solutions converge to exact solutions at expected theoretical rates.
