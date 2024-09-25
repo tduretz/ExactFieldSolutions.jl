@@ -2,106 +2,108 @@ function ComputeConstants( params )
     @unpack θ1, θ2, η1, η2, Vr0, Vt0, Vr2, Vt2 = params
     A1 = -Vt0
 
-    sinθ2, cosθ2 = sincos(θ2)
-    sinθ1, cosθ1 = sincos(θ1)
-    sinθ2_square = sinθ2^2
-    coseθ2_square = cosθ2^2
-    B1 = ((sinθ1^2*(η1*η2*coseθ2_square+η1^2*(θ2^2*sinθ2_square+(θ2^2-1.0)*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1^2*(η1*η2*sinθ2_square+η1^2*((θ2^2-1.0)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1*sinθ1*(2.0*η1^2*cosθ2*sinθ2-2.0*η1*η2*cosθ2*sinθ2))*Vr0+(
-         sinθ1^2*(η1*η2*(-1.0*θ2*sinθ2_square-1.0*cosθ2*sinθ2-1.0*θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η2^2*(-1.0*coseθ2_square-1.0*sinθ2_square)))+cosθ1^2*
-         (η1*η2*(-1.0*θ2*sinθ2_square-1.0*cosθ2*sinθ2-1.0*θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η2^2*(-1.0*coseθ2_square-1.0*sinθ2_square)))+cosθ1*sinθ1*
-         (η2^2*(-1.0*sinθ2_square-1.0*coseθ2_square)+η1*η2*(sinθ2_square+coseθ2_square)))*Vt0+cosθ1*sinθ1*(η2^2*(sinθ2*Vr2+cosθ2*Vt2)+η1*η2*(-1.0*sinθ2*Vr2-1.0*cosθ2*Vt2))+
-         sinθ1^2*
-         (θ1*(η1*η2*(-1.0*cosθ2*Vt2-1.0*sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2))+η2^2*(sinθ2*Vt2-1.0*cosθ2*Vr2)+η1*η2*((θ2*sinθ2+cosθ2)*Vr2+θ2*cosθ2*Vt2))
-         +cosθ1^2*(θ1*(η1*η2*(-1.0*cosθ2*Vt2-1.0*sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2))+η1*η2*(θ2*sinθ2*Vr2+θ2*cosθ2*Vt2+sinθ2*Vt2)))/(sinθ1^2*(2.0*η1*
-         η2*coseθ2_square+η2^2*(-1.0*sinθ2_square-1.0*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1.0)*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1^2*(η1^2*((θ2^2-1.0)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1*sinθ1*(2.0*η1^2*cosθ2*sinθ2-2.0*η1*η2*cosθ2*sinθ2));
-    C1  = -(1.0*((sinθ1^2*(η2^2*(sinθ2_square+coseθ2_square)-1.0*η1*η2*coseθ2_square)+η1*η2*cosθ1^2*sinθ2_square)*Vr0+(sinθ1^2*
-         (η1*η2*(-1.0*θ2*sinθ2_square-1.0*cosθ2*sinθ2-1.0*θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η2^2*(-1.0*coseθ2_square-1.0*sinθ2_square)))+cosθ1^2*
-         (η1*η2*(-1.0*θ2*sinθ2_square-1.0*cosθ2*sinθ2-1.0*θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η2^2*(-1.0*coseθ2_square-1.0*sinθ2_square)))+cosθ1*sinθ1*
-         (η2^2*(-1.0*sinθ2_square-1.0*coseθ2_square)+η1*η2*(sinθ2_square+coseθ2_square)))*Vt0+cosθ1*sinθ1*(η2^2*(sinθ2*Vr2+cosθ2*Vt2)+η1*η2*(-1.0*sinθ2*Vr2-1.0*cosθ2*Vt2))+
-         sinθ1^2*
-         (θ1*(η1*η2*(-1.0*cosθ2*Vt2-1.0*sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2))+η2^2*(sinθ2*Vt2-1.0*cosθ2*Vr2)+η1*η2*((θ2*sinθ2+cosθ2)*Vr2+θ2*cosθ2*Vt2))
-         +cosθ1^2*(θ1*(η1*η2*(-1.0*cosθ2*Vt2-1.0*sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2))+η1*η2*(θ2*sinθ2*Vr2+θ2*cosθ2*Vt2+sinθ2*Vt2))))/(sinθ1^2*(2.0*η1*
-         η2*coseθ2_square+η2^2*(-1.0*sinθ2_square-1.0*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1.0)*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1^2*(η1^2*((θ2^2-1.0)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1*sinθ1*(2.0*η1^2*cosθ2*sinθ2-2.0*η1*η2*cosθ2*sinθ2));
-    D1 = -(1.0*((sinθ1^2*(η1*η2*(θ2*sinθ2_square-1.0*cosθ2*sinθ2+θ2*coseθ2_square)+θ1*(η2^2*(coseθ2_square+sinθ2_square)+η1*η2*(-1.0*coseθ2_square-1.0*sinθ2_square)))+cosθ1^2*
-         (η1*η2*(θ2*sinθ2_square-1.0*cosθ2*sinθ2+θ2*coseθ2_square)+θ1*(η2^2*(coseθ2_square+sinθ2_square)+η1*η2*(-1.0*coseθ2_square-1.0*sinθ2_square)))+cosθ1*sinθ1*
-         (η2^2*(-1.0*sinθ2_square-1.0*coseθ2_square)+η1*η2*(sinθ2_square+coseθ2_square)))*Vr0+(sinθ1^2*(η1*η2*coseθ2_square+η2^2*(-1.0*sinθ2_square-1.0*coseθ2_square))-1.0*η1*η2*cosθ1^2*sinθ2_square)*
-         Vt0+cosθ1*sinθ1*(η1*η2*(sinθ2*Vt2-1.0*cosθ2*Vr2)+η2^2*(cosθ2*Vr2-1.0*sinθ2*Vt2))+cosθ1^2*
-         (θ1*(η1*η2*(cosθ2*Vr2-1.0*sinθ2*Vt2)+η2^2*(sinθ2*Vt2-1.0*cosθ2*Vr2))+η1*η2*((sinθ2-1.0*θ2*cosθ2)*Vr2+θ2*sinθ2*Vt2))+sinθ1^2*(θ1*
-         (η1*η2*(cosθ2*Vr2-1.0*sinθ2*Vt2)+η2^2*(sinθ2*Vt2-1.0*cosθ2*Vr2))+η1*η2*(-1.0*θ2*cosθ2*Vr2-1.0*cosθ2*Vt2+θ2*sinθ2*Vt2)+η2^2*(sinθ2*Vr2+cosθ2*Vt2))
-         ))/(sinθ1^2*(2.0*η1*η2*coseθ2_square+η2^2*(-1.0*sinθ2_square-1.0*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1.0)*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1^2*(η1^2*((θ2^2-1.0)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1*sinθ1*(2.0*η1^2*cosθ2*sinθ2-2.0*η1*η2*cosθ2*sinθ2));
-    A2 = -(1.0*((sinθ1^2*
-         (θ1*(η1*η2*sinθ2_square-1.0*η1^2*sinθ2_square)+η1*η2*(-1.0*θ2*sinθ2_square+cosθ2*sinθ2-1.0*θ2*coseθ2_square)+η1^2*(θ2*sinθ2_square-1.0*cosθ2*sinθ2+θ2*coseθ2_square))+θ1*
-         cosθ1^2*(η1*η2*sinθ2_square-1.0*η1^2*sinθ2_square)+cosθ1*sinθ1*(η1^2*sinθ2_square-1.0*η1*η2*sinθ2_square))*Vr0+(sinθ1^2*(-1.0*η1*η2*sinθ2_square+η1^2*
-         (θ2^2*sinθ2_square+θ2^2*coseθ2_square)+θ1*(η1*η2*(θ2*coseθ2_square-1.0*cosθ2*sinθ2+θ2*sinθ2_square)+η1^2*(-1.0*θ2*coseθ2_square+cosθ2*sinθ2-1.0*θ2*sinθ2_square)))+cosθ1^2*
-         (η1^2*((θ2^2-1.0)*sinθ2_square+θ2^2*coseθ2_square)+θ1*(η1*η2*(θ2*coseθ2_square-1.0*cosθ2*sinθ2+θ2*sinθ2_square)+η1^2*(-1.0*θ2*coseθ2_square+cosθ2*sinθ2-1.0*θ2*sinθ2_square)))+
-         cosθ1*sinθ1*(η1^2*(-1.0*θ2*sinθ2_square+cosθ2*sinθ2-1.0*θ2*coseθ2_square)+η1*η2*(θ2*sinθ2_square-1.0*cosθ2*sinθ2+θ2*coseθ2_square)))*Vt0+cosθ1*sinθ1*
-         (η1^2*(θ2*sinθ2*Vr2+θ2*cosθ2*Vt2+sinθ2*Vt2)+η1*η2*(-1.0*θ2*sinθ2*Vr2-1.0*θ2*cosθ2*Vt2-1.0*sinθ2*Vt2))+cosθ1^2*(θ1*
-         (η1^2*(-1.0*sinθ2*Vt2-1.0*θ2*cosθ2*Vt2-1.0*θ2*sinθ2*Vr2)+η1*η2*(sinθ2*Vt2+θ2*cosθ2*Vt2+θ2*sinθ2*Vr2))+θ1^2*
-         (η1*η2*(-2.0*cosθ2*Vt2-2.0*sinθ2*Vr2)+η1^2*(cosθ2*Vt2+sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2)))+sinθ1^2*(θ1*
-         (η1^2*(-1.0*sinθ2*Vt2-1.0*θ2*cosθ2*Vt2-1.0*θ2*sinθ2*Vr2)+η1*η2*(sinθ2*Vt2+θ2*cosθ2*Vt2+θ2*sinθ2*Vr2))+θ1^2*
-         (η1*η2*(-2.0*cosθ2*Vt2-2.0*sinθ2*Vr2)+η1^2*(cosθ2*Vt2+sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2))+η1^2*(-1.0*θ2*cosθ2*Vr2-1.0*cosθ2*Vt2+θ2*sinθ2*Vt2)+
-         η1*η2*((sinθ2+θ2*cosθ2)*Vr2+2.0*cosθ2*Vt2-1.0*θ2*sinθ2*Vt2)+η2^2*(-1.0*sinθ2*Vr2-1.0*cosθ2*Vt2))))/(sinθ1^2*(2.0*η1*η2*coseθ2_square+η2^2*
-         (-1.0*sinθ2_square-1.0*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1.0)*coseθ2_square)+θ1^2*(η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+
-         θ1*(η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1^2*(η1^2*((θ2^2-1.0)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1*sinθ1*(2.0*η1^2*cosθ2*sinθ2-2.0*η1*η2*cosθ2*sinθ2));
-    B2 = ((cosθ1^2*
-         (η1^2*(θ2^2*sinθ2_square+θ2^2*coseθ2_square)+θ1*(η1*η2*(θ2*coseθ2_square+cosθ2*sinθ2+θ2*sinθ2_square)+η1^2*(-1.0*θ2*coseθ2_square-1.0*cosθ2*sinθ2-1.0*θ2*sinθ2_square)))+sinθ1^2*(
-         η1*η2*coseθ2_square+η1^2*(θ2^2*sinθ2_square+(θ2^2-1.0)*coseθ2_square)+θ1*
-         (η1*η2*(θ2*coseθ2_square+cosθ2*sinθ2+θ2*sinθ2_square)+η1^2*(-1.0*θ2*coseθ2_square-1.0*cosθ2*sinθ2-1.0*θ2*sinθ2_square)))+cosθ1*sinθ1*
-         (η1*η2*(-1.0*θ2*sinθ2_square-1.0*cosθ2*sinθ2-1.0*θ2*coseθ2_square)+η1^2*(θ2*sinθ2_square+cosθ2*sinθ2+θ2*coseθ2_square)))*Vr0+(sinθ1^2*
-         (θ1*(η1^2*coseθ2_square-1.0*η1*η2*coseθ2_square)+η1*η2*(-1.0*θ2*sinθ2_square-1.0*cosθ2*sinθ2-1.0*θ2*coseθ2_square))+cosθ1^2*
-         (θ1*(η1^2*coseθ2_square-1.0*η1*η2*coseθ2_square)+η1^2*(-1.0*θ2*sinθ2_square-1.0*cosθ2*sinθ2-1.0*θ2*coseθ2_square))+cosθ1*sinθ1*(η1^2*coseθ2_square-1.0*η1*η2*coseθ2_square))*Vt0+
-         cosθ1*sinθ1*(η1^2*(-1.0*θ2*cosθ2*Vr2-1.0*cosθ2*Vt2+θ2*sinθ2*Vt2)+η1*η2*(θ2*cosθ2*Vr2+cosθ2*Vt2-1.0*θ2*sinθ2*Vt2))+sinθ1^2*(θ1*
-         (η1*η2*(-1.0*θ2*sinθ2*Vt2+cosθ2*Vt2+θ2*cosθ2*Vr2)+η1^2*(θ2*sinθ2*Vt2-1.0*cosθ2*Vt2-1.0*θ2*cosθ2*Vr2))+θ1^2*
-         (η1^2*(cosθ2*Vr2-1.0*sinθ2*Vt2)+η2^2*(cosθ2*Vr2-1.0*sinθ2*Vt2)+η1*η2*(2.0*sinθ2*Vt2-2.0*cosθ2*Vr2))+η2^2*(sinθ2*Vt2-1.0*cosθ2*Vr2)+η1*η2*
-         ((θ2*sinθ2+cosθ2)*Vr2+θ2*cosθ2*Vt2))+cosθ1^2*(θ1*
-         (η1*η2*(-1.0*θ2*sinθ2*Vt2+cosθ2*Vt2+θ2*cosθ2*Vr2)+η1^2*(θ2*sinθ2*Vt2-1.0*cosθ2*Vt2-1.0*θ2*cosθ2*Vr2))+θ1^2*
-         (η1^2*(cosθ2*Vr2-1.0*sinθ2*Vt2)+η2^2*(cosθ2*Vr2-1.0*sinθ2*Vt2)+η1*η2*(2.0*sinθ2*Vt2-2.0*cosθ2*Vr2))+η1^2*(θ2*sinθ2*Vr2+θ2*cosθ2*Vt2+sinθ2*Vt2)))/(
-         sinθ1^2*(2.0*η1*η2*coseθ2_square+η2^2*(-1.0*sinθ2_square-1.0*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1.0)*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1^2*(η1^2*((θ2^2-1.0)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1*sinθ1*(2.0*η1^2*cosθ2*sinθ2-2.0*η1*η2*cosθ2*sinθ2));
-    C2 =  -(1.0*((sinθ1^2*(η1*η2*(sinθ2_square+coseθ2_square)-1.0*η1^2*coseθ2_square)+η1^2*cosθ1^2*sinθ2_square)*Vr0+(sinθ1^2*
-         (η1^2*(-1.0*θ2*sinθ2_square-1.0*cosθ2*sinθ2-1.0*θ2*coseθ2_square)+θ1*(η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-1.0*coseθ2_square-1.0*sinθ2_square)))+cosθ1^2*
-         (η1^2*(-1.0*θ2*sinθ2_square-1.0*cosθ2*sinθ2-1.0*θ2*coseθ2_square)+θ1*(η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-1.0*coseθ2_square-1.0*sinθ2_square)))+cosθ1*sinθ1*
-         (η1*η2*(-1.0*sinθ2_square-1.0*coseθ2_square)+η1^2*(sinθ2_square+coseθ2_square)))*Vt0+cosθ1*sinθ1*(η1*η2*(sinθ2*Vr2+cosθ2*Vt2)+η1^2*(-1.0*sinθ2*Vr2-1.0*cosθ2*Vt2))+
-         sinθ1^2*
-         (θ1*(η1^2*(-1.0*cosθ2*Vt2-1.0*sinθ2*Vr2)+η1*η2*(cosθ2*Vt2+sinθ2*Vr2))+η1*η2*(sinθ2*Vt2-1.0*cosθ2*Vr2)+η1^2*((θ2*sinθ2+cosθ2)*Vr2+θ2*cosθ2*Vt2))
-         +cosθ1^2*(θ1*(η1^2*(-1.0*cosθ2*Vt2-1.0*sinθ2*Vr2)+η1*η2*(cosθ2*Vt2+sinθ2*Vr2))+η1^2*(θ2*sinθ2*Vr2+θ2*cosθ2*Vt2+sinθ2*Vt2))))/(sinθ1^2*(2.0*η1*η2*
-         coseθ2_square+η2^2*(-1.0*sinθ2_square-1.0*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1.0)*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1^2*(η1^2*((θ2^2-1.0)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1*sinθ1*(2.0*η1^2*cosθ2*sinθ2-2.0*η1*η2*cosθ2*sinθ2));
-    D2 = -(1.0*((sinθ1^2*(η1^2*(θ2*sinθ2_square-1.0*cosθ2*sinθ2+θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η1^2*(-1.0*coseθ2_square-1.0*sinθ2_square)))+cosθ1^2*
-         (η1^2*(θ2*sinθ2_square-1.0*cosθ2*sinθ2+θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η1^2*(-1.0*coseθ2_square-1.0*sinθ2_square)))+cosθ1*sinθ1*
-         (η1*η2*(-1.0*sinθ2_square-1.0*coseθ2_square)+η1^2*(sinθ2_square+coseθ2_square)))*Vr0+(sinθ1^2*(η1^2*coseθ2_square+η1*η2*(-1.0*sinθ2_square-1.0*coseθ2_square))-1.0*η1^2*cosθ1^2*sinθ2_square)*Vt0+
-         cosθ1*sinθ1*(η1^2*(sinθ2*Vt2-1.0*cosθ2*Vr2)+η1*η2*(cosθ2*Vr2-1.0*sinθ2*Vt2))+cosθ1^2*
-         (θ1*(η1^2*(cosθ2*Vr2-1.0*sinθ2*Vt2)+η1*η2*(sinθ2*Vt2-1.0*cosθ2*Vr2))+η1^2*((sinθ2-1.0*θ2*cosθ2)*Vr2+θ2*sinθ2*Vt2))+sinθ1^2*(θ1*
-         (η1^2*(cosθ2*Vr2-1.0*sinθ2*Vt2)+η1*η2*(sinθ2*Vt2-1.0*cosθ2*Vr2))+η1^2*(-1.0*θ2*cosθ2*Vr2-1.0*cosθ2*Vt2+θ2*sinθ2*Vt2)+η1*η2*(sinθ2*Vr2+cosθ2*Vt2))
-         ))/(sinθ1^2*(2.0*η1*η2*coseθ2_square+η2^2*(-1.0*sinθ2_square-1.0*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1.0)*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1^2*(η1^2*((θ2^2-1.0)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
-         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2.0*coseθ2_square-2.0*sinθ2_square))+θ1*
-         (η1*η2*(2.0*θ2*coseθ2_square+2.0*θ2*sinθ2_square)+η1^2*(-2.0*θ2*coseθ2_square-2.0*θ2*sinθ2_square)))+cosθ1*sinθ1*(2.0*η1^2*cosθ2*sinθ2-2.0*η1*η2*cosθ2*sinθ2));
+    sinθ2, cosθ2  = sincos(θ2)
+    sinθ1, cosθ1  = sincos(θ1)
+    sinθ2_square  = @fastpow sinθ2^2
+    coseθ2_square = @fastpow cosθ2^2
+    sinθ1_square  = @fastpow sinθ1^2
+    cosθ1_square  = @fastpow cosθ1^2
+    B1 = @fastpow ((sinθ1_square*(η1*η2*coseθ2_square+η1^2*(θ2^2*sinθ2_square+(θ2^2-1)*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1_square*(η1*η2*sinθ2_square+η1^2*((θ2^2-1)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1*sinθ1*(2*η1^2*cosθ2*sinθ2-2*η1*η2*cosθ2*sinθ2))*Vr0+(
+         sinθ1_square*(η1*η2*(-1*θ2*sinθ2_square-1*cosθ2*sinθ2-1*θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η2^2*(-1*coseθ2_square-1*sinθ2_square)))+cosθ1_square*
+         (η1*η2*(-1*θ2*sinθ2_square-1*cosθ2*sinθ2-1*θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η2^2*(-1*coseθ2_square-1*sinθ2_square)))+cosθ1*sinθ1*
+         (η2^2*(-1*sinθ2_square-1*coseθ2_square)+η1*η2*(sinθ2_square+coseθ2_square)))*Vt0+cosθ1*sinθ1*(η2^2*(sinθ2*Vr2+cosθ2*Vt2)+η1*η2*(-1*sinθ2*Vr2-1*cosθ2*Vt2))+
+         sinθ1_square*
+         (θ1*(η1*η2*(-1*cosθ2*Vt2-1*sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2))+η2^2*(sinθ2*Vt2-1*cosθ2*Vr2)+η1*η2*((θ2*sinθ2+cosθ2)*Vr2+θ2*cosθ2*Vt2))
+         +cosθ1_square*(θ1*(η1*η2*(-1*cosθ2*Vt2-1*sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2))+η1*η2*(θ2*sinθ2*Vr2+θ2*cosθ2*Vt2+sinθ2*Vt2)))/(sinθ1_square*(2*η1*
+         η2*coseθ2_square+η2^2*(-1*sinθ2_square-1*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1)*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1_square*(η1^2*((θ2^2-1)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1*sinθ1*(2*η1^2*cosθ2*sinθ2-2*η1*η2*cosθ2*sinθ2));
+    C1  = @fastpow  -(1*((sinθ1_square*(η2^2*(sinθ2_square+coseθ2_square)-1*η1*η2*coseθ2_square)+η1*η2*cosθ1_square*sinθ2_square)*Vr0+(sinθ1_square*
+         (η1*η2*(-1*θ2*sinθ2_square-1*cosθ2*sinθ2-1*θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η2^2*(-1*coseθ2_square-1*sinθ2_square)))+cosθ1_square*
+         (η1*η2*(-1*θ2*sinθ2_square-1*cosθ2*sinθ2-1*θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η2^2*(-1*coseθ2_square-1*sinθ2_square)))+cosθ1*sinθ1*
+         (η2^2*(-1*sinθ2_square-1*coseθ2_square)+η1*η2*(sinθ2_square+coseθ2_square)))*Vt0+cosθ1*sinθ1*(η2^2*(sinθ2*Vr2+cosθ2*Vt2)+η1*η2*(-1*sinθ2*Vr2-1*cosθ2*Vt2))+
+         sinθ1_square*
+         (θ1*(η1*η2*(-1*cosθ2*Vt2-1*sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2))+η2^2*(sinθ2*Vt2-1*cosθ2*Vr2)+η1*η2*((θ2*sinθ2+cosθ2)*Vr2+θ2*cosθ2*Vt2))
+         +cosθ1_square*(θ1*(η1*η2*(-1*cosθ2*Vt2-1*sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2))+η1*η2*(θ2*sinθ2*Vr2+θ2*cosθ2*Vt2+sinθ2*Vt2))))/(sinθ1_square*(2*η1*
+         η2*coseθ2_square+η2^2*(-1*sinθ2_square-1*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1)*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1_square*(η1^2*((θ2^2-1)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1*sinθ1*(2*η1^2*cosθ2*sinθ2-2*η1*η2*cosθ2*sinθ2));
+    D1 = @fastpow -(1*((sinθ1_square*(η1*η2*(θ2*sinθ2_square-1*cosθ2*sinθ2+θ2*coseθ2_square)+θ1*(η2^2*(coseθ2_square+sinθ2_square)+η1*η2*(-1*coseθ2_square-1*sinθ2_square)))+cosθ1_square*
+         (η1*η2*(θ2*sinθ2_square-1*cosθ2*sinθ2+θ2*coseθ2_square)+θ1*(η2^2*(coseθ2_square+sinθ2_square)+η1*η2*(-1*coseθ2_square-1*sinθ2_square)))+cosθ1*sinθ1*
+         (η2^2*(-1*sinθ2_square-1*coseθ2_square)+η1*η2*(sinθ2_square+coseθ2_square)))*Vr0+(sinθ1_square*(η1*η2*coseθ2_square+η2^2*(-1*sinθ2_square-1*coseθ2_square))-1*η1*η2*cosθ1_square*sinθ2_square)*
+         Vt0+cosθ1*sinθ1*(η1*η2*(sinθ2*Vt2-1*cosθ2*Vr2)+η2^2*(cosθ2*Vr2-1*sinθ2*Vt2))+cosθ1_square*
+         (θ1*(η1*η2*(cosθ2*Vr2-1*sinθ2*Vt2)+η2^2*(sinθ2*Vt2-1*cosθ2*Vr2))+η1*η2*((sinθ2-1*θ2*cosθ2)*Vr2+θ2*sinθ2*Vt2))+sinθ1_square*(θ1*
+         (η1*η2*(cosθ2*Vr2-1*sinθ2*Vt2)+η2^2*(sinθ2*Vt2-1*cosθ2*Vr2))+η1*η2*(-1*θ2*cosθ2*Vr2-1*cosθ2*Vt2+θ2*sinθ2*Vt2)+η2^2*(sinθ2*Vr2+cosθ2*Vt2))
+         ))/(sinθ1_square*(2*η1*η2*coseθ2_square+η2^2*(-1*sinθ2_square-1*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1)*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1_square*(η1^2*((θ2^2-1)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1*sinθ1*(2*η1^2*cosθ2*sinθ2-2*η1*η2*cosθ2*sinθ2));
+    A2 = @fastpow -(1*((sinθ1_square*
+         (θ1*(η1*η2*sinθ2_square-1*η1^2*sinθ2_square)+η1*η2*(-1*θ2*sinθ2_square+cosθ2*sinθ2-1*θ2*coseθ2_square)+η1^2*(θ2*sinθ2_square-1*cosθ2*sinθ2+θ2*coseθ2_square))+θ1*
+         cosθ1_square*(η1*η2*sinθ2_square-1*η1^2*sinθ2_square)+cosθ1*sinθ1*(η1^2*sinθ2_square-1*η1*η2*sinθ2_square))*Vr0+(sinθ1_square*(-1*η1*η2*sinθ2_square+η1^2*
+         (θ2^2*sinθ2_square+θ2^2*coseθ2_square)+θ1*(η1*η2*(θ2*coseθ2_square-1*cosθ2*sinθ2+θ2*sinθ2_square)+η1^2*(-1*θ2*coseθ2_square+cosθ2*sinθ2-1*θ2*sinθ2_square)))+cosθ1_square*
+         (η1^2*((θ2^2-1)*sinθ2_square+θ2^2*coseθ2_square)+θ1*(η1*η2*(θ2*coseθ2_square-1*cosθ2*sinθ2+θ2*sinθ2_square)+η1^2*(-1*θ2*coseθ2_square+cosθ2*sinθ2-1*θ2*sinθ2_square)))+
+         cosθ1*sinθ1*(η1^2*(-1*θ2*sinθ2_square+cosθ2*sinθ2-1*θ2*coseθ2_square)+η1*η2*(θ2*sinθ2_square-1*cosθ2*sinθ2+θ2*coseθ2_square)))*Vt0+cosθ1*sinθ1*
+         (η1^2*(θ2*sinθ2*Vr2+θ2*cosθ2*Vt2+sinθ2*Vt2)+η1*η2*(-1*θ2*sinθ2*Vr2-1*θ2*cosθ2*Vt2-1*sinθ2*Vt2))+cosθ1_square*(θ1*
+         (η1^2*(-1*sinθ2*Vt2-1*θ2*cosθ2*Vt2-1*θ2*sinθ2*Vr2)+η1*η2*(sinθ2*Vt2+θ2*cosθ2*Vt2+θ2*sinθ2*Vr2))+θ1^2*
+         (η1*η2*(-2*cosθ2*Vt2-2*sinθ2*Vr2)+η1^2*(cosθ2*Vt2+sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2)))+sinθ1_square*(θ1*
+         (η1^2*(-1*sinθ2*Vt2-1*θ2*cosθ2*Vt2-1*θ2*sinθ2*Vr2)+η1*η2*(sinθ2*Vt2+θ2*cosθ2*Vt2+θ2*sinθ2*Vr2))+θ1^2*
+         (η1*η2*(-2*cosθ2*Vt2-2*sinθ2*Vr2)+η1^2*(cosθ2*Vt2+sinθ2*Vr2)+η2^2*(cosθ2*Vt2+sinθ2*Vr2))+η1^2*(-1*θ2*cosθ2*Vr2-1*cosθ2*Vt2+θ2*sinθ2*Vt2)+
+         η1*η2*((sinθ2+θ2*cosθ2)*Vr2+2*cosθ2*Vt2-1*θ2*sinθ2*Vt2)+η2^2*(-1*sinθ2*Vr2-1*cosθ2*Vt2))))/(sinθ1_square*(2*η1*η2*coseθ2_square+η2^2*
+         (-1*sinθ2_square-1*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1)*coseθ2_square)+θ1^2*(η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+
+         θ1*(η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1_square*(η1^2*((θ2^2-1)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1*sinθ1*(2*η1^2*cosθ2*sinθ2-2*η1*η2*cosθ2*sinθ2));
+    B2 = @fastpow ((cosθ1_square*
+         (η1^2*(θ2^2*sinθ2_square+θ2^2*coseθ2_square)+θ1*(η1*η2*(θ2*coseθ2_square+cosθ2*sinθ2+θ2*sinθ2_square)+η1^2*(-1*θ2*coseθ2_square-1*cosθ2*sinθ2-1*θ2*sinθ2_square)))+sinθ1_square*(
+         η1*η2*coseθ2_square+η1^2*(θ2^2*sinθ2_square+(θ2^2-1)*coseθ2_square)+θ1*
+         (η1*η2*(θ2*coseθ2_square+cosθ2*sinθ2+θ2*sinθ2_square)+η1^2*(-1*θ2*coseθ2_square-1*cosθ2*sinθ2-1*θ2*sinθ2_square)))+cosθ1*sinθ1*
+         (η1*η2*(-1*θ2*sinθ2_square-1*cosθ2*sinθ2-1*θ2*coseθ2_square)+η1^2*(θ2*sinθ2_square+cosθ2*sinθ2+θ2*coseθ2_square)))*Vr0+(sinθ1_square*
+         (θ1*(η1^2*coseθ2_square-1*η1*η2*coseθ2_square)+η1*η2*(-1*θ2*sinθ2_square-1*cosθ2*sinθ2-1*θ2*coseθ2_square))+cosθ1_square*
+         (θ1*(η1^2*coseθ2_square-1*η1*η2*coseθ2_square)+η1^2*(-1*θ2*sinθ2_square-1*cosθ2*sinθ2-1*θ2*coseθ2_square))+cosθ1*sinθ1*(η1^2*coseθ2_square-1*η1*η2*coseθ2_square))*Vt0+
+         cosθ1*sinθ1*(η1^2*(-1*θ2*cosθ2*Vr2-1*cosθ2*Vt2+θ2*sinθ2*Vt2)+η1*η2*(θ2*cosθ2*Vr2+cosθ2*Vt2-1*θ2*sinθ2*Vt2))+sinθ1_square*(θ1*
+         (η1*η2*(-1*θ2*sinθ2*Vt2+cosθ2*Vt2+θ2*cosθ2*Vr2)+η1^2*(θ2*sinθ2*Vt2-1*cosθ2*Vt2-1*θ2*cosθ2*Vr2))+θ1^2*
+         (η1^2*(cosθ2*Vr2-1*sinθ2*Vt2)+η2^2*(cosθ2*Vr2-1*sinθ2*Vt2)+η1*η2*(2*sinθ2*Vt2-2*cosθ2*Vr2))+η2^2*(sinθ2*Vt2-1*cosθ2*Vr2)+η1*η2*
+         ((θ2*sinθ2+cosθ2)*Vr2+θ2*cosθ2*Vt2))+cosθ1_square*(θ1*
+         (η1*η2*(-1*θ2*sinθ2*Vt2+cosθ2*Vt2+θ2*cosθ2*Vr2)+η1^2*(θ2*sinθ2*Vt2-1*cosθ2*Vt2-1*θ2*cosθ2*Vr2))+θ1^2*
+         (η1^2*(cosθ2*Vr2-1*sinθ2*Vt2)+η2^2*(cosθ2*Vr2-1*sinθ2*Vt2)+η1*η2*(2*sinθ2*Vt2-2*cosθ2*Vr2))+η1^2*(θ2*sinθ2*Vr2+θ2*cosθ2*Vt2+sinθ2*Vt2)))/(
+         sinθ1_square*(2*η1*η2*coseθ2_square+η2^2*(-1*sinθ2_square-1*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1)*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1_square*(η1^2*((θ2^2-1)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1*sinθ1*(2*η1^2*cosθ2*sinθ2-2*η1*η2*cosθ2*sinθ2));
+    C2 = @fastpow  -(1*((sinθ1_square*(η1*η2*(sinθ2_square+coseθ2_square)-1*η1^2*coseθ2_square)+η1^2*cosθ1_square*sinθ2_square)*Vr0+(sinθ1_square*
+         (η1^2*(-1*θ2*sinθ2_square-1*cosθ2*sinθ2-1*θ2*coseθ2_square)+θ1*(η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-1*coseθ2_square-1*sinθ2_square)))+cosθ1_square*
+         (η1^2*(-1*θ2*sinθ2_square-1*cosθ2*sinθ2-1*θ2*coseθ2_square)+θ1*(η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-1*coseθ2_square-1*sinθ2_square)))+cosθ1*sinθ1*
+         (η1*η2*(-1*sinθ2_square-1*coseθ2_square)+η1^2*(sinθ2_square+coseθ2_square)))*Vt0+cosθ1*sinθ1*(η1*η2*(sinθ2*Vr2+cosθ2*Vt2)+η1^2*(-1*sinθ2*Vr2-1*cosθ2*Vt2))+
+         sinθ1_square*
+         (θ1*(η1^2*(-1*cosθ2*Vt2-1*sinθ2*Vr2)+η1*η2*(cosθ2*Vt2+sinθ2*Vr2))+η1*η2*(sinθ2*Vt2-1*cosθ2*Vr2)+η1^2*((θ2*sinθ2+cosθ2)*Vr2+θ2*cosθ2*Vt2))
+         +cosθ1_square*(θ1*(η1^2*(-1*cosθ2*Vt2-1*sinθ2*Vr2)+η1*η2*(cosθ2*Vt2+sinθ2*Vr2))+η1^2*(θ2*sinθ2*Vr2+θ2*cosθ2*Vt2+sinθ2*Vt2))))/(sinθ1_square*(2*η1*η2*
+         coseθ2_square+η2^2*(-1*sinθ2_square-1*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1)*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1_square*(η1^2*((θ2^2-1)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1*sinθ1*(2*η1^2*cosθ2*sinθ2-2*η1*η2*cosθ2*sinθ2));
+    D2 = @fastpow -(1*((sinθ1_square*(η1^2*(θ2*sinθ2_square-1*cosθ2*sinθ2+θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η1^2*(-1*coseθ2_square-1*sinθ2_square)))+cosθ1_square*
+         (η1^2*(θ2*sinθ2_square-1*cosθ2*sinθ2+θ2*coseθ2_square)+θ1*(η1*η2*(coseθ2_square+sinθ2_square)+η1^2*(-1*coseθ2_square-1*sinθ2_square)))+cosθ1*sinθ1*
+         (η1*η2*(-1*sinθ2_square-1*coseθ2_square)+η1^2*(sinθ2_square+coseθ2_square)))*Vr0+(sinθ1_square*(η1^2*coseθ2_square+η1*η2*(-1*sinθ2_square-1*coseθ2_square))-1*η1^2*cosθ1_square*sinθ2_square)*Vt0+
+         cosθ1*sinθ1*(η1^2*(sinθ2*Vt2-1*cosθ2*Vr2)+η1*η2*(cosθ2*Vr2-1*sinθ2*Vt2))+cosθ1_square*
+         (θ1*(η1^2*(cosθ2*Vr2-1*sinθ2*Vt2)+η1*η2*(sinθ2*Vt2-1*cosθ2*Vr2))+η1^2*((sinθ2-1*θ2*cosθ2)*Vr2+θ2*sinθ2*Vt2))+sinθ1_square*(θ1*
+         (η1^2*(cosθ2*Vr2-1*sinθ2*Vt2)+η1*η2*(sinθ2*Vt2-1*cosθ2*Vr2))+η1^2*(-1*θ2*cosθ2*Vr2-1*cosθ2*Vt2+θ2*sinθ2*Vt2)+η1*η2*(sinθ2*Vr2+cosθ2*Vt2))
+         ))/(sinθ1_square*(2*η1*η2*coseθ2_square+η2^2*(-1*sinθ2_square-1*coseθ2_square)+η1^2*(θ2^2*sinθ2_square+(θ2^2-1)*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1_square*(η1^2*((θ2^2-1)*sinθ2_square+θ2^2*coseθ2_square)+θ1^2*
+         (η2^2*(coseθ2_square+sinθ2_square)+η1^2*(coseθ2_square+sinθ2_square)+η1*η2*(-2*coseθ2_square-2*sinθ2_square))+θ1*
+         (η1*η2*(2*θ2*coseθ2_square+2*θ2*sinθ2_square)+η1^2*(-2*θ2*coseθ2_square-2*θ2*sinθ2_square)))+cosθ1*sinθ1*(2*η1^2*cosθ2*sinθ2-2*η1*η2*cosθ2*sinθ2));
     return (A1, B1, C1, D1, A2, B2, C2, D2)
 end
 
@@ -204,10 +206,10 @@ function Stokes2D_Moulas2021(X;
         θ2  = 180π/180, 
         η1  = 1e0, 
         η2  = 1e3, 
-        Vr0 = -1., 
-        Vt0 =  0., 
-        Vr2 =  0., 
-        Vt2 =  0.,) )
+        Vr0 = -1e0, 
+        Vt0 =  0e0, 
+        Vr2 =  0e0, 
+        Vt2 =  0e0,) )
     # Constants
     c = ComputeConstants( params )
     # Check position

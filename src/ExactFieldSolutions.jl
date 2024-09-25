@@ -1,6 +1,6 @@
 module ExactFieldSolutions 
 
-using SpecialFunctions, ForwardDiff, UnPack, StaticArrays, Printf
+using SpecialFunctions, ForwardDiff, UnPack, StaticArrays, Printf, FastPow
 
 include("Wave1D/Wave1D_dAlembert.jl")
 export Wave1D_dAlembert
