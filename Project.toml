@@ -4,12 +4,12 @@ authors = ["tduretz <duretz@uni-frankfurt.de>"]
 version = "0.1.5"
 
 [deps]
-Enzyme = "7da242da-08ed-463a-9acd-ee780be4f1d9"
 FastPow = "c0e83750-1142-43a8-81cf-6c956b72b4d1"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 UnPack = "3a884ed6-31ef-47d7-9d2a-63182c4928ed"
 
 [compat]

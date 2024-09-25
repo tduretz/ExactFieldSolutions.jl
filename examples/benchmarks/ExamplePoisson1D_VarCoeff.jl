@@ -68,7 +68,7 @@ import LinearAlgebra: norm
             # b[1]   = 2*∇𝑞(-L/2,β) - b[2]       # this is OK as the Δb is anyway O(2)
             # b[end] = 2*∇𝑞( L/2,β) - b[end-1]
             # Flux
-            # dudx[2:end-1]  .= diff(u)/Δx
+            dudx[2:end-1]  .= -1
             q[2:end-1]  .= -k[2:end-1].*diff(u)/Δx
             qb[2:end-1] .= -k[2:end-1].*diff(b)/Δx
             # Laplacian of source term
@@ -165,10 +165,10 @@ import LinearAlgebra: norm
     return err
 end
 
-@printf("Convergence for Abide (2020):\n")
-@show sqrt(main(10, :Abide)/main(20, :Abide))
-@show sqrt(main(20, :Abide)/main(40, :Abide))
+# @printf("Convergence for Abide (2020):\n")
+# @show sqrt(main(10, :Abide)/main(20, :Abide))
+# @show sqrt(main(20, :Abide)/main(40, :Abide))
 
-# @printf("Convergence for Spotz (1996):\n")
-# @show sqrt(main(10, :Spotz)/main(20, :Spotz))
-# @show sqrt(main(20, :Spotz)/main(40, :Spotz))
+@printf("Convergence for Spotz (1996):\n")
+@show sqrt(main(10, :Spotz)/main(20, :Spotz))
+@show sqrt(main(20, :Spotz)/main(40, :Spotz))
