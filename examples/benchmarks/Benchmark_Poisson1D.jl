@@ -59,8 +59,6 @@ function main(Δx, ncx, L)
     Res_closed! = (F, T) -> Residual!(F, T, b, k, Δx, x)
     sparsity    = Symbolics.jacobian_sparsity(Res_closed!, output, input)
     J           = Float64.(sparse(sparsity))
-
-    # Makes coloring
     colors      = matrix_colors(J)
 
     # Initial condition: Evaluate exact initial solution
