@@ -20,7 +20,7 @@ and returns:
 julia> Diffusion1D_Gaussian([0 0])
 (u = 100.0, ∇u = [0.0 0.0 -0.06283185307179585], s = 0.0)
 ```
-
+[]
 ```julia-repl
 julia> params = (T0 = 1., K = 1.0, σ = 0.1 ) 
 (T0 = 1.0, K = 1.0, σ = 0.1)
