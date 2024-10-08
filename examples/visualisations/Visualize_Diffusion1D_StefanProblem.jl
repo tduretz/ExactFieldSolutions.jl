@@ -7,7 +7,7 @@ function main()
     y   = LinRange(0, 4, Ny)
 
     # Allocate arrays
-    t   = [0.1 1e3 1e4 1e5]
+    t   = [0.1 1e4 1e5 1e6]
     T   = zeros(length(t),Ny)
 
     # Evaluate solution

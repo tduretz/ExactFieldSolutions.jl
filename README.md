@@ -43,6 +43,10 @@ This functionality is temporary and will disappear oncee the upcoming [workspace
 
 ![alt text](img/Diffusion1D_Gaussian.svg)
 
+[Diffusion of a 1D: Stefan Problem](examples/visualisations/Visualize_Diffusion1D_StefanProblem.jl)
+
+![alt text](img/Diffusion1D_StefanProblem.svg)
+
 ### Diffusion 2D
 [Diffusion of a 2D Gaussian](examples/visualisations/Visualize_Diffusion2D_Gaussian.jl)
 
