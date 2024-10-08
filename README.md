@@ -43,7 +43,7 @@ This functionality is temporary and will disappear oncee the upcoming [workspace
 
 ![alt text](img/Diffusion1D_Gaussian.svg)
 
-[Diffusion of a 1D: Stefan Problem](examples/visualisations/Visualize_Diffusion1D_StefanProblem.jl)
+[Diffusion 1D: Stefan Problem](examples/visualisations/Visualize_Diffusion1D_StefanProblem.jl)
 
 ![alt text](img/Diffusion1D_StefanProblem.svg)
 
