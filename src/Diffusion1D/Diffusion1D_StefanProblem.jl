@@ -21,7 +21,7 @@ end
 Evaluates the analytical solution of the Stefan problem in 1D: 
 
     X      : is the coordinate and time vector or tuple, X[1] is space and X[2] is time 
-    params : optional parameter array, default: (Tm=1050+273.15, T0=273.15 , L=4e5, c=1e3 , κ=7e-6) 
+    params : optional parameter array, default: (Tm=1050, T0=0, L=4e5, c=1e3 , κ=7e-6) 
 and returns:
 
     sol    : tuple containing the solution fields T and the ym the depth of the solidification interface
@@ -37,7 +37,7 @@ julia> Diffusion1D_StefanProblem( (coord_y=0.1, time=1e5 ) )
 ```
 """
 function Diffusion1D_StefanProblem(X;
-    params = (Tm=1050+273.15, T0=273.15 , L=4e5, c=1e3 , κ=7e-6 ) )
+    params = (Tm=1050, T0=0 , L=4e5, c=1e3 , κ=7e-6 ) )
     @unpack Tm, T0, L, c, κ = params
     y, t = X[1], X[2]
     # Compute lambda
@@ -52,7 +52,6 @@ function Diffusion1D_StefanProblem(X;
     y >= ym ? θ = 1.0 : nothing # ternary operator
     # Calculation of temperature with the dimentionneless temperature (θ)
     T  = (Tm - T0) * θ + T0
-    T -= 273.15 
     return (T=T, ym=ym)
 end
 
