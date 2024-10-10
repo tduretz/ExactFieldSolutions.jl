@@ -56,7 +56,7 @@ function Diffusion1D_StefanProblem(X;
 end
 
 function Diffusion1D_StefanProblem(coords::Union{Tuple, NamedTuple};
-    params = (Tm=1050+273.15, T0=273.15 , L=4e5, c=1e3 , κ=7e-6 ) )
+    params = (Tm=1050, T0=0 , L=4e5, c=1e3 , κ=7e-6 ) )
     X = SVector(values(coords)...)
     sol = Diffusion1D_StefanProblem(X; params)
     return (T=sol.T, ym=sol.ym)
