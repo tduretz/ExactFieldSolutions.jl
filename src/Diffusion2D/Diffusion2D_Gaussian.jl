@@ -26,7 +26,7 @@ julia> Diffusion2D_Gaussian((0, 0, 0))
 ```
 """
 function Diffusion2D_Gaussian(x;
-    params = (T0 = 100., K = 1e-6, σ = 0.1 ) )
+    params = (T0 = 100., K = 1e-6, σ = 0.1) )
     u      = Diffusion2D_Gaussian_u_fwd(x, params)
     f_cl   = x -> Diffusion2D_Gaussian_u_fwd(x, params)
     gradu  = ForwardDiff.gradient(f_cl, x)
