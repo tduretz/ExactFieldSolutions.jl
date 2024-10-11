@@ -1,16 +1,15 @@
 function Calc_λ1(L,c,Tm,T0)
     # guess
-    λ1   = 0.5
+    λ1 = 0.5
     # function
-    f(λ1,L,c,Tm,T0) = (exp(-λ1^ 2)) / (λ1 * erf(λ1)) - (L * sqrt(pi)) / (c * (Tm - T0))
-    for iter=1:100 
+    θ  = (L * √π) / (c * (Tm - T0))
+    # closure
+    @inline 𝑓(λ1) = (exp(-λ1^ 2)) / (λ1 * erf(λ1)) - θ
+    for _ in  1:100 
         # Residuals
-        𝑓        = f(λ1,L,c,Tm,T0)
-        # closure
-        f_cl     = λ1 -> f(λ1,L,c,Tm,T0)
-        d𝑓dλ1    = ForwardDiff.derivative(f_cl, λ1)
+        d𝑓dλ1    = ForwardDiff.derivative(𝑓, λ1)
         λ1      -= 𝑓/d𝑓dλ1
-        abs(𝑓) < 1e-8 ? break : nothing
+        abs(𝑓) < 1e-8 && break
     end
     return λ1
 end
@@ -43,24 +42,25 @@ function Diffusion1D_StefanProblem(X;
     # Compute lambda
     λ1 = Calc_λ1(L, c, Tm, T0)       
     # Calculation of the depth of the solid-liquid boundary
-    ym = 2 * λ1 * sqrt(κ * t)         
+    α  = 2 * √(κ * t)
+    ym = λ1 * α
     # Calculation of dimensionless coodinate η
-    η  = y / (2 * sqrt(κ * t))        
+    η  = y / α
     # Calculation of dimensionless temperature θ
     θ  = (erf(η)) / (erf(λ1))
     # Check
-    y >= ym ? θ = 1.0 : nothing # ternary operator
+    y  ≥ ym && (θ = 1.0)
     # Calculation of temperature with the dimentionneless temperature (θ)
     T  = (Tm - T0) * θ + T0
     T -= 273.15 
-    return (T=T, ym=ym)
+    return (; T=T, ym=ym)
 end
 
-function Diffusion1D_StefanProblem(coords::Union{Tuple, NamedTuple};
-    params = (Tm=1050+273.15, T0=273.15 , L=4e5, c=1e3 , κ=7e-6 ) )
+function Diffusion1D_StefanProblem(
+    coords::Union{Tuple, NamedTuple};
+    params = (;Tm=1050+273.15, T0=273.15 , L=4e5, c=1e3 , κ=7e-6)
+)
     X = SVector(values(coords)...)
     sol = Diffusion1D_StefanProblem(X; params)
-    return (T=sol.T, ym=sol.ym)
+    return (; T=sol.T, ym=sol.ym)
 end
-
-Diffusion1D_StefanProblem( (coord_y=0.1, time=1e5 ) )
