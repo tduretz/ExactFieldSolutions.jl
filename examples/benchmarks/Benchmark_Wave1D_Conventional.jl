@@ -9,7 +9,6 @@ _func(::Val{:dAlembert},        x) = Wave1D_dAlembert(x)
 _func(::Val{:HeteroPlusSource}, x) = Wave1D_HeteroPlusSource(x)
 _func(::Val{:Source},           x) = Wave1D_Source(x)
 
-
 # Problem type
 problem = :dAlembert
 problem = :HeteroPlusSource
