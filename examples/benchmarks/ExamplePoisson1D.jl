@@ -1,4 +1,4 @@
-using Plots # need to install Plots package 
+using Plots, Printf # need to install Plots package 
 import LinearAlgebra: norm
 
 𝑢(𝑥)    =  cos(𝑥) # manufactured solution

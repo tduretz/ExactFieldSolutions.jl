@@ -1,4 +1,4 @@
-using Plots # need to install Plots package 
+using Plots, Printf # need to install Plots package 
 import LinearAlgebra: norm
 
 𝑢(𝑥)    =  cos(𝑥) # manufactured solution
@@ -165,10 +165,10 @@ import LinearAlgebra: norm
     return err
 end
 
-# @printf("Convergence for Abide (2020):\n")
-# @show sqrt(main(10, :Abide)/main(20, :Abide))
-# @show sqrt(main(20, :Abide)/main(40, :Abide))
+@printf("Convergence for Abide (2020):\n")
+@show sqrt(main(10, :Abide)/main(20, :Abide))
+@show sqrt(main(20, :Abide)/main(40, :Abide))
 
-@printf("Convergence for Spotz (1996):\n")
-@show sqrt(main(10, :Spotz)/main(20, :Spotz))
-@show sqrt(main(20, :Spotz)/main(40, :Spotz))
+# @printf("Convergence for Spotz (1996):\n")
+# @show sqrt(main(10, :Spotz)/main(20, :Spotz))
+# @show sqrt(main(20, :Spotz)/main(40, :Spotz))
