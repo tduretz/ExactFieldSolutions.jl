@@ -88,6 +88,11 @@ This functionality is temporary and will disappear oncee the upcoming [workspace
 
 ![alt text](img/Elasticity2D_Hole.svg "Elastic plate with a hole")
 
+### Poroelasticity 2D
+[Fluid injection in poroelastic medium](examples/visualisations/Visualize_Poroelasticity2D_Rozhko2008.jl)
+
+![alt text](img/Poroelasticity2D_Rozhko2008.svg "Elastic plate with a hole")
+
 ## Benchmarking examples
 
 ### Diffusion 1D
