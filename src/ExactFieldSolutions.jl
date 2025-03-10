@@ -50,4 +50,7 @@ export Stokes2D_SolCx_Zhong1996
 include("Elasticity2D/Elasticity2D_Hole.jl")
 export Elasticity2D_Hole
 
+include("Poroelasticity2D/Poroelasticity2D_Rozhko2008.jl")
+export Poroelasticity2D_Rozhko2008
+
 end # module ExactFieldSolutions
