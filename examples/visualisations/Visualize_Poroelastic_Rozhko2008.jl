@@ -3,7 +3,7 @@ using ExactFieldSolutions, Plots
 function main()
 
     # Define domain
-    Nx, Ny = 100, 100
+    Nx, Ny = 101, 101
     x    = LinRange(-5, 5, Nx)
     y    = LinRange(-5, 5, Ny)
 
