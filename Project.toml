@@ -14,7 +14,7 @@ UnPack = "3a884ed6-31ef-47d7-9d2a-63182c4928ed"
 
 [compat]
 FastPow = "0.1.0"
-ForwardDiff = "0.10"
+ForwardDiff = "0, 1"
 SpecialFunctions = "1, 2"
 StaticArrays = "1"
 UnPack = "1"
