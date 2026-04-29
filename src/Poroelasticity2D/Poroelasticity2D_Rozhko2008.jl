@@ -1,6 +1,6 @@
 using UnPack, StaticArrays
 @doc raw"""
-    sol = Poroelasstic2D_Rozhko2008(x; params)  
+    sol = Poroelasticity2D_Rozhko2008(x; params)  
 
 Evaluates the solution for an elastic medium with a circular hole under far field stress (derived from Kirsch solution, Jaeger & Cook etc...):
 
@@ -12,11 +12,11 @@ and returns:
 
 # Examples
 ```julia-repl
-julia> Poroelasstic2D_Rozhko2008([1,1])
+julia> Poroelasticity2D_Rozhko2008([1,1])
 (u = [0.005436794860536682 0.005436794860536681], u_pol = [0.007688789027611311 -0.0], pt = 0.014066799864165765, pf = 0.8843108934201204, σ = [-0.019291833584202365 0.003918775290027451; 0.003918775290027451 -0.008841766144129164], σ_pol = [-0.007535507714120015 -0.0; -0.0 -0.020598092014211516])
 ```
 ```julia-repl
-julia> Poroelasstic2D_Rozhko2008((1,1))
+julia> Poroelasticity2D_Rozhko2008((1,1))
 (pt = 0.014066799864165765, pf = 0.8843108934201204, u = (x = 0.005436794860536682, y = 0.005436794860536681), σ = (xx = -0.019291833584202365, xy = 0.003918775290027451, yx = 0.003918775290027451, yy = -0.008841766144129164))
 ```
 """
