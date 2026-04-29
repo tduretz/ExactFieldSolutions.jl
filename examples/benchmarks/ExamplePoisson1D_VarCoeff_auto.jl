@@ -4,8 +4,12 @@ import LinearAlgebra: norm
 𝑢(𝑥)    =  cos(𝑥) # manufactured solution
 ∇𝑢(𝑥)   = -sin(𝑥) 
 Δ𝑢(𝑥)   = -cos(𝑥)
-β(𝑥)    =  cos(𝑥)
-∇β(𝑥)   = -sin(𝑥)
+β(𝑥)    = sin(𝑥/2) + 2
+∇β(𝑥)   = 0.5*cos(𝑥/2)
+# β(𝑥)    = sin(𝑥) + 2
+# ∇β(𝑥)   = cos(𝑥)
+# β(𝑥)    =  cos(𝑥)
+# ∇β(𝑥)   = -sin(𝑥)
 # β(𝑥)    =  1.0
 # ∇β(𝑥)   =  0.0
 𝑞(𝑥)    = -β(𝑥)*∇𝑢(𝑥) 
@@ -142,7 +146,7 @@ import LinearAlgebra: norm
             # Rate update
             ∂u∂τ       .= (1-θ*0.01).*∂u∂τ .+ F 
             # Variable update
-            u[2:end-1]    .+= ∂u∂τ*0.8e-5
+            u[2:end-1]    .+= ∂u∂τ*0.8e-5/4
 
             # Check
             nF          = norm(F)/sqrt(length(F))
@@ -170,6 +174,6 @@ end
 @show sqrt(main(10, :Abide)/main(20, :Abide))
 @show sqrt(main(20, :Abide)/main(40, :Abide))
 
-# @printf("Convergence for Spotz (1996):\n")
-# @show sqrt(main(10, :Spotz)/main(20, :Spotz))
-# @show sqrt(main(20, :Spotz)/main(40, :Spotz))
+@printf("Convergence for Spotz (1996):\n")
+@show sqrt(main(10, :Spotz)/main(20, :Spotz))
+@show sqrt(main(20, :Spotz)/main(40, :Spotz))
