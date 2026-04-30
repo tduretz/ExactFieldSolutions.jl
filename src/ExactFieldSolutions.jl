@@ -38,6 +38,9 @@ export Stokes2D_Donea2003
 include("Stokes2D/Stokes2D_Schmid2003.jl")
 export Stokes2D_Schmid2003
 
+include("Stokes2D/Stokes2D_Duretz2026.jl")
+export Stokes2D_Duretz2026
+
 include("Stokes2D/Stokes2D_Moulas2021.jl")
 export Stokes2D_Moulas2021
 
