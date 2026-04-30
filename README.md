@@ -67,7 +67,7 @@ This functionality is temporary and will disappear once the upcoming [workspace]
 ![alt text](img/Stokes2D_Schmid2003.svg "Schmid & Podladchikov (2003)")
 
 ### Stokes 2D
-[Viscous inclusion - Duretz et al., (2026)](examples/visualisations/Visualize_Stokes2D_Duretz2026.jl)
+[Compressible viscous inclusion - Duretz et al., (2026): builds up on top of Schmid & Podladchikov (2003) and Jeager & Cook book's solution](examples/visualisations/Visualize_Stokes2D_Duretz2026.jl)
 
 <img src="img/Stokes2D_Duretz2026.png" alt="alt text" width="500">
 
