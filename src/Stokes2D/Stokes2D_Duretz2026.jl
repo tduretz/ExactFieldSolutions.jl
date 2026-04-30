@@ -1,3 +1,48 @@
+# ---- Matrix potentials ----
+ϕ_mat(z, k, γ̇, ε̇, ηm, rc)    = -im/2*ηm*γ̇*z      -   (im*γ̇ + 2*ε̇) * k[1] * rc^2 / z^1 
+ϕ′_mat(z, k, γ̇, ε̇, ηm, rc)   = -im/2*ηm*γ̇        +   (im*γ̇ + 2*ε̇) * k[1] * rc^2 / z^2
+ϕ′′_mat(z, k, γ̇, ε̇, ηm, rc)  =                   - 2*(im*γ̇ + 2*ε̇) * k[1] * rc^2 / z^3
+ψ_mat(z, k, γ̇, ε̇, ηm, rc)    = (im*γ̇ - 2*ε̇)*ηm*z -   (im*γ̇ + 2*ε̇) * k[2] * rc^4 / z^3 
+ψ′_mat(z, k, γ̇, ε̇, ηm, rc)   = (im*γ̇ - 2*ε̇)*ηm   + 3*(im*γ̇ + 2*ε̇) * k[2] * rc^4 / z^4 
+# ---- Inclusion potentials ----
+ϕ_inc(z, k, γ̇, ε̇, ηi, rc)    = -im/2*ηi*γ̇*z 
+ϕ′_inc(z, k, γ̇, ε̇, ηi, rc)   = -im/2*ηi*γ̇   
+ϕ′′_inc(z, k, γ̇, ε̇, ηi, rc)  = 0.0
+ψ_inc(z, k, γ̇, ε̇, ηi, rc)    = 2*(im*γ̇ - 2*ε̇) * k[3] * z  - (im*γ̇ + 2*ε̇)* k[4] *ηi*z
+ψ′_inc(z, k, γ̇, ε̇, ηi, rc)   = 2*(im*γ̇ - 2*ε̇) * k[3]      - (im*γ̇ + 2*ε̇)* k[4] *ηi
+
+function residual(k, rc, ηm, ηi, κm, κi, γ̇, ε̇)
+    θ    = π/3
+    z    = rc * exp(im*θ)
+    # ---- Matrix at r=rc ----
+    ϕm   = ϕ_mat(z, k, γ̇, ε̇, ηm, rc ) 
+    ϕm′  = ϕ′_mat(z, k, γ̇, ε̇, ηm, rc) 
+    ϕm′′ = ϕ′′_mat(z, k, γ̇, ε̇, ηm, rc) 
+    ψm   = ψ_mat(z, k, γ̇, ε̇, ηm, rc ) 
+    ψm′  = ψ′_mat(z, k, γ̇, ε̇, ηm, rc) 
+    # ---- Inclusion at r=rc ----
+    ϕi   = ϕ_inc(z, k, γ̇, ε̇, ηi, rc )
+    ϕi′  = ϕ′_inc(z, k, γ̇, ε̇, ηi, rc)
+    ϕi′′ = ϕ′′_inc(z, k, γ̇, ε̇, ηi, rc)
+    ψi   = ψ_inc(z, k, γ̇, ε̇, ηi, rc )
+    ψi′  = ψ′_inc(z, k, γ̇, ε̇, ηi, rc)
+    # ---- Displacement at r=rc ----
+    um   = 1/(2*ηm)*(κm*ϕm - z*conj(ϕm′) - conj(ψm))
+    ui   = 1/(2*ηi)*(κi*ϕi - z*conj(ϕi′) - conj(ψi))
+    # ---- Traction at r=rc ----
+    Tm   = 4*real(ϕm′) - 2*(conj(z)* ϕm′′ + ψm′)*exp(2*im*θ)
+    Ti   = 4*real(ϕi′) - 2*(conj(z)* ϕi′′ + ψi′)*exp(2*im*θ)
+    return @SVector([real(um - ui); imag(um - ui); real(Tm - Ti); imag(Tm - Ti)])
+end
+
+function constants(rc, ηm, ηi, κm, κi, γ̇, ε̇)
+    k        = @SVector ones(4)
+    r        = residual(k, rc, ηm, ηi, κm, κi, γ̇, ε̇)
+    J        = ForwardDiff.jacobian( x -> residual(x, rc, ηm, ηi, κm, κi, γ̇, ε̇), k)
+    k       -= J \ r
+    return k
+end
+
 @doc raw"""
     sol = Stokes2D_Duretz2026(x; params)  
 
@@ -13,21 +58,18 @@ and returns:
 # Examples
 ```julia-repl
 julia> Stokes2D_Duretz2026( [0.2, 0.5] )
-(V = [-0.2089090434970527, 0.47592372115980974], p = -0.09568944517573581, τ = [-2.00581033036802 0.12557580379582292; 0.12557580379582292 2.0064482600025246])
+(V = [-0.20890904349705283, 0.47592372115980935], p = -0.09568944517573741, τ = [-2.0058103303680195 0.12557580379582506; 0.12557580379582506 2.0064482600025246], τzz = -0.0006379296345049162)
 ```
 ```julia-repl
 julia> Stokes2D_Duretz2026( (0.2, 0.5) )
-(p = -0.09568944517573581, V = (x = -0.2089090434970527, y = 0.47592372115980974), τ = (xx = -2.00581033036802, xy = 0.12557580379582292, yx = 0.12557580379582292, yy = 2.0064482600025246))
+(p = -0.09568944517573741, V = (x = -0.20890904349705283, y = 0.47592372115980935), τ = (xx = -2.0058103303680195, xy = 0.12557580379582506, yx = 0.12557580379582506, yy = 2.0064482600025246, zz = -0.0006379296345049162))
 ```
 """
-
 function Stokes2D_Duretz2026(x; 
-    params = (ηm=1.0, ηi=100.0, ξm=100.0, ξi=100.0, R=0.1, γ̇=0.0, ε̇=-1.0) )
-    ηm, ηi, ξm, ξi, R, γ̇, ε̇ = params
+    params=(ηm=1.0, ηi=100.0, ξm=100.0, ξi=100.0, R=0.1, γ̇=0.0, ε̇=-1.0))
+    ηm, ηi, ξm, ξi, rc, γ̇, ε̇= params
     # Complex coordinate
     z  = x[1] + im*x[2]
-    # Shear viscosity ratio
-    β  = ηi/ηm
     # Poisson ratios
     νm = (3*ξm - 2*ηm) / (2*(3*ξm + ηm))
     νi = (3*ξi - 2*ηi) / (2*(3*ξi + ηi))
@@ -35,36 +77,24 @@ function Stokes2D_Duretz2026(x;
     κm = 3 - 4*νm
     κi = 3 - 4*νi 
     # Constants
-    A  = 2 *   2* (1 - β) / (β*κm + 1) # multiplied by 2 w.r.t Jaeger & Cook
-    C  = 2 *      (β - 1) / (β*κm + 1) # multiplied by 2 w.r.t Jaeger & Cook
-    Ci = 2 * (β*(κi + 1)) / (β*κi + 1) # multiplied by 2 w.r.t Jaeger & Cook
-    # Far-field principal stress (Jaeger & Cook)
-    # σ1  = 2 * ηm * ε̇  
+    k = constants(rc, ηm, ηi, κm, κi, γ̇, ε̇)
     # Correct for compressible and incompressible limits
-    if (x[1]^2 + x[2]^2) > R^2
+    if (x[1]^2 + x[2]^2) > rc^2
         η, κ = ηm, κm
         # As in Schmid & Podladchikov (2004)
-        ϕ    = -im/2*ηm*γ̇*z      -   (im*γ̇ + 2*ε̇) * (-A)/4 * R^2 / z^1 
-        ϕ′   = -im/2*ηm*γ̇        +   (im*γ̇ + 2*ε̇) * (-A)/4 * R^2 / z^2
-        ϕ′′  =                   - 2*(im*γ̇ + 2*ε̇) * (-A)/4 * R^2 / z^3
-        ψ    = (im*γ̇ - 2*ε̇)*ηm*z -   (im*γ̇ + 2*ε̇) *    C/2 * R^4 / z^3 
-        ψ′   = (im*γ̇ - 2*ε̇)*ηm   + 3*(im*γ̇ + 2*ε̇) *    C/2 * R^4 / z^4 
-        # As in Jaeger & Cook
-        # ϕ  = σ1/4 * ( A*R^2/z^1) 
-        # ϕ′ = σ1/4 * (-A*R^2/z^2) 
-        # ψ  =-σ1/2 * ( 2*z + C*R^4/z^3)  
+        ϕ    = ϕ_mat(z, k, γ̇, ε̇, ηm, rc )   
+        ϕ′   = ϕ′_mat(z, k, γ̇, ε̇, ηm, rc)  
+        ϕ′′  = ϕ′′_mat(z, k, γ̇, ε̇, ηm, rc) 
+        ψ    = ψ_mat(z, k, γ̇, ε̇, ηm, rc )  
+        ψ′   = ψ′_mat(z, k, γ̇, ε̇, ηm, rc)  
     else
         # As in Schmid & Podladchikov (2004)
         η, κ = ηi, κi
-        ϕ    = -im/2*ηi*γ̇*z
-        ϕ′   = -im/2*ηi*γ̇
-        ϕ′′  = 0.0
-        ψ    = 2*(im*γ̇ - 2*ε̇) * Ci/4 * z 
-        ψ′   = 2*(im*γ̇ - 2*ε̇) * Ci/4 
-        # As in Jaeger & Cook
-        # ϕ′ = 0.0
-        # ϕ  = 0.0
-        # ψ  = -σ1/2 * Ci * z
+        ϕ    = ϕ_inc(z, k, γ̇, ε̇, ηi, rc ) 
+        ϕ′   = ϕ′_inc(z, k, γ̇, ε̇, ηi, rc)    
+        ϕ′′  = ϕ′′_inc(z, k, γ̇, ε̇, ηi, rc) 
+        ψ    = ψ_inc(z, k, γ̇, ε̇, ηi, rc )
+        ψ′   = ψ′_inc(z, k, γ̇, ε̇, ηi, rc)
     end
     sxx_p_syy         = 4*real(ϕ′)
     sxx_m_syy_p_2isxy = 2*(conj(z)*ϕ′′ + ψ′)
@@ -74,14 +104,14 @@ function Stokes2D_Duretz2026(x;
     szz               = νm * sxx_p_syy
     p                 = -1/3*(sxx_p_syy + szz)
     W                 = 1/(2*η) * (κ*ϕ - z*conj(ϕ′) - conj(ψ))
-    return (V=@SVector([real(W), imag(W)]), p=p, τ=@SMatrix([sxx+p sxy; sxy syy+p]))
+    return (V=@SVector([real(W), imag(W)]), p=p, τ=@SMatrix([sxx+p sxy; sxy syy+p]), τzz=szz+p )
 end
 
 function Stokes2D_Duretz2026(coords::Union{Tuple, NamedTuple};
     params = (ηm=1.0, ηi=100.0, ξm=100.0, ξi=100.0, R=0.1, γ̇=0.0, ε̇=-1.0) )
-    X = SVector(values(coords)...)
-    sol = Stokes2D_Duretz2026(X; params)
+    x = SVector(values(coords)...)
+    sol = Stokes2D_Duretz2026(x; params)
     return (p=sol.p, 
     V=(x=sol.V[1], y=sol.V[2]),
-    τ=(xx=sol.τ[1,1], xy=sol.τ[1,2], yx=sol.τ[2,1], yy=sol.τ[2,2]))
+    τ=(xx=sol.τ[1,1], xy=sol.τ[1,2], yx=sol.τ[2,1], yy=sol.τ[2,2], zz=sol.τzz))
 end
