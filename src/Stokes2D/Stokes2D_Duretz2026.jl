@@ -1,15 +1,15 @@
 # ---- Matrix potentials ----
-ϕ_mat(z, k, γ̇, ε̇, ηm, rc)    = -im/2*ηm*γ̇*z      -   (im*γ̇ + 2*ε̇) * k[1] * rc^2 / z^1 
-ϕ′_mat(z, k, γ̇, ε̇, ηm, rc)   = -im/2*ηm*γ̇        +   (im*γ̇ + 2*ε̇) * k[1] * rc^2 / z^2
-ϕ′′_mat(z, k, γ̇, ε̇, ηm, rc)  =                   - 2*(im*γ̇ + 2*ε̇) * k[1] * rc^2 / z^3
-ψ_mat(z, k, γ̇, ε̇, ηm, rc)    = (im*γ̇ - 2*ε̇)*ηm*z -   (im*γ̇ + 2*ε̇) * k[2] * rc^4 / z^3 
-ψ′_mat(z, k, γ̇, ε̇, ηm, rc)   = (im*γ̇ - 2*ε̇)*ηm   + 3*(im*γ̇ + 2*ε̇) * k[2] * rc^4 / z^4 
+ϕ_mat(z, k, γ̇, ε̇, ηm, rc)    = -im/2*ηm*γ̇*z      -   (im*γ̇ + 2*ε̇) * ηm * k[1] * rc^2 / z^1 
+ϕ′_mat(z, k, γ̇, ε̇, ηm, rc)   = -im/2*ηm*γ̇        +   (im*γ̇ + 2*ε̇) * ηm * k[1] * rc^2 / z^2
+ϕ′′_mat(z, k, γ̇, ε̇, ηm, rc)  =                   - 2*(im*γ̇ + 2*ε̇) * ηm * k[1] * rc^2 / z^3
+ψ_mat(z, k, γ̇, ε̇, ηm, rc)    = (im*γ̇ - 2*ε̇)*ηm*z -   (im*γ̇ + 2*ε̇) * ηm * k[2] * rc^4 / z^3 
+ψ′_mat(z, k, γ̇, ε̇, ηm, rc)   = (im*γ̇ - 2*ε̇)*ηm   + 3*(im*γ̇ + 2*ε̇) * ηm * k[2] * rc^4 / z^4 
 # ---- Inclusion potentials ----
 ϕ_inc(z, k, γ̇, ε̇, ηi, rc)    = -im/2*ηi*γ̇*z 
 ϕ′_inc(z, k, γ̇, ε̇, ηi, rc)   = -im/2*ηi*γ̇   
 ϕ′′_inc(z, k, γ̇, ε̇, ηi, rc)  = 0.0
-ψ_inc(z, k, γ̇, ε̇, ηi, rc)    = 2*(im*γ̇ - 2*ε̇) * k[3] * z  - (im*γ̇ + 2*ε̇)* k[4] *ηi*z
-ψ′_inc(z, k, γ̇, ε̇, ηi, rc)   = 2*(im*γ̇ - 2*ε̇) * k[3]      - (im*γ̇ + 2*ε̇)* k[4] *ηi
+ψ_inc(z, k, γ̇, ε̇, ηi, rc)    = 2*(im*γ̇ - 2*ε̇) * ηi * k[3] * z  
+ψ′_inc(z, k, γ̇, ε̇, ηi, rc)   = 2*(im*γ̇ - 2*ε̇) * ηi * k[3] 
 
 function residual(k, rc, ηm, ηi, κm, κi, γ̇, ε̇)
     θ    = π/3
@@ -32,11 +32,11 @@ function residual(k, rc, ηm, ηi, κm, κi, γ̇, ε̇)
     # ---- Traction at r=rc ----
     Tm   = 4*real(ϕm′) - 2*(conj(z)* ϕm′′ + ψm′)*exp(2*im*θ)
     Ti   = 4*real(ϕi′) - 2*(conj(z)* ϕi′′ + ψi′)*exp(2*im*θ)
-    return @SVector([real(um - ui); imag(um - ui); real(Tm - Ti); imag(Tm - Ti)])
+    return @SVector([real(um - ui); imag(um - ui); real(Tm - Ti)])
 end
 
 function constants(rc, ηm, ηi, κm, κi, γ̇, ε̇)
-    k        = @SVector ones(4)
+    k        = @SVector ones(3)
     r        = residual(k, rc, ηm, ηi, κm, κi, γ̇, ε̇)
     J        = ForwardDiff.jacobian( x -> residual(x, rc, ηm, ηi, κm, κi, γ̇, ε̇), k)
     k       -= J \ r
@@ -80,31 +80,27 @@ function Stokes2D_Duretz2026(x;
     k = constants(rc, ηm, ηi, κm, κi, γ̇, ε̇)
     # Correct for compressible and incompressible limits
     if (x[1]^2 + x[2]^2) > rc^2
-        η, κ = ηm, κm
-        # As in Schmid & Podladchikov (2004)
+        η, κ, ν = ηm, κm, νm
         ϕ    = ϕ_mat(z, k, γ̇, ε̇, ηm, rc )   
         ϕ′   = ϕ′_mat(z, k, γ̇, ε̇, ηm, rc)  
         ϕ′′  = ϕ′′_mat(z, k, γ̇, ε̇, ηm, rc) 
         ψ    = ψ_mat(z, k, γ̇, ε̇, ηm, rc )  
         ψ′   = ψ′_mat(z, k, γ̇, ε̇, ηm, rc)  
     else
-        # As in Schmid & Podladchikov (2004)
-        η, κ = ηi, κi
+        η, κ, ν = ηi, κi, νi
         ϕ    = ϕ_inc(z, k, γ̇, ε̇, ηi, rc ) 
         ϕ′   = ϕ′_inc(z, k, γ̇, ε̇, ηi, rc)    
         ϕ′′  = ϕ′′_inc(z, k, γ̇, ε̇, ηi, rc) 
         ψ    = ψ_inc(z, k, γ̇, ε̇, ηi, rc )
         ψ′   = ψ′_inc(z, k, γ̇, ε̇, ηi, rc)
     end
-    sxx_p_syy         = 4*real(ϕ′)
-    sxx_m_syy_p_2isxy = 2*(conj(z)*ϕ′′ + ψ′)
-    sxy               = 1/2*imag(sxx_m_syy_p_2isxy)
-    syy               = 1/2*real((sxx_p_syy + sxx_m_syy_p_2isxy))
-    sxx               = sxx_p_syy - syy
-    szz               = νm * sxx_p_syy
-    p                 = -1/3*(sxx_p_syy + szz)
-    W                 = 1/(2*η) * (κ*ϕ - z*conj(ϕ′) - conj(ψ))
-    return (V=@SVector([real(W), imag(W)]), p=p, τ=@SMatrix([sxx+p sxy; sxy syy+p]), τzz=szz+p )
+    sxx = 2*real(ϕ′) - real(conj(z)*ϕ′′ + ψ′)
+    syy = 2*real(ϕ′) + real(conj(z)*ϕ′′ + ψ′)
+    sxy = imag(conj(z)*ϕ′′ + ψ′)
+    szz = ν * (sxx + syy)
+    p   = -1/3*(sxx + syy + szz)
+    U   = 1/(2*η) * (κ*ϕ - z*conj(ϕ′) - conj(ψ))
+    return (V=@SVector([real(U), imag(U)]), p=p, τ=@SMatrix([sxx+p sxy; sxy syy+p]), τzz=szz+p )
 end
 
 function Stokes2D_Duretz2026(coords::Union{Tuple, NamedTuple};
