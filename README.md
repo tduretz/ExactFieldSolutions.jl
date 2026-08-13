@@ -65,11 +65,11 @@ It is necessary to activate the example environment in order to reproduce the vi
 ![alt text](img/Stokes2D_Schmid2003.svg "Schmid & Podladchikov (2003)")
 
 ### Stokes 2D
-[Compressible viscous inclusion - Duretz et al., (2026):](examples/visualisations/Visualize_Stokes2D_Duretz2026.jl)
+[Compressible viscous inclusion - Moutzouris & Duretz, (2026):](examples/visualisations/Visualize_Stokes2D_Moutzouris2026.jl)
 
 Builds up on top of Schmid & Podladchikov (2003) and Jeager & Cook book's solution.
 
-<img src="img/Stokes2D_Duretz2026.png" alt="alt text" width="500">
+<img src="img/Stokes2D_Moutzouris2026.png" alt="alt text" width="500">
 
 [Double corner flow - Moulas et al., (2021)](examples/visualisations/Visualize_Stokes2D_Moulas2021.jl)
 
