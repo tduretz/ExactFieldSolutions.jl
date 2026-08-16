@@ -78,10 +78,17 @@ function Stokes2D_Moutzouris_circle(x;
     szz  = ν_loc*(sxx + syy) + E_loc*ε̇zz
     p    = -(sxx + syy + szz) / 3
     vel  = (κ_loc*ϕ - z*conj(ϕ′) - conj(ψ)) / (2*η_loc) - ν_loc*ε̇zz*z
+    # Velocity gradient tensor
+    ∂v∂z = (κ_loc*ϕ′ - conj(ϕ′)) / (2*η_loc) - ν_loc*ε̇zz
+    ∂v∂z̄ = -conj(Qval) / (2*η_loc)
+    ∂v∂x = ∂v∂z + ∂v∂z̄
+    ∂v∂y = im*(∂v∂z - ∂v∂z̄)
     return (V   = @SVector([real(vel), imag(vel)]),
             p   = p,
             τ   = @SMatrix([sxx+p  sxy; sxy  syy+p]),
-            τzz = szz + p)
+            τzz = szz + p,
+            L   = @SMatrix([real(∂v∂x)  real(∂v∂y);
+                            imag(∂v∂x)  imag(∂v∂y)]))
 end
 
 # physical position from the conformal coordinate
@@ -180,8 +187,9 @@ function Stokes2D_Moutzouris_ellipse(x;
     ω′       = 1.0 - λ^-2.0
     ω′′      = 2.0*λ^-3.0
     zbar     = conj(λ) + 1.0/conj(λ)           # = conj(z)
-    Φp       = (ω′*ϕ′′ - ω′′*ϕ′) / ω′^3        # = Φ′(z)
-    S        = 4.0*real(ϕ′/ω′)                 # σxx+σyy
+    Φ        = ϕ′/ω′                           # = Φ(z)  = dϕ/dz
+    Φp       = (ω′*ϕ′′ - ω′′*ϕ′) / ω′^3        # = Φ′(z) = d²ϕ/dz²
+    S        = 4.0*real(Φ)                     # σxx+σyy
     D        = 2.0*( zbar*Φp + ψ′/ω′ )         # σyy-σxx+2iσxy
     sxx      = (S - real(D))/2
     syy      = (S + real(D))/2
@@ -190,8 +198,17 @@ function Stokes2D_Moutzouris_ellipse(x;
     p        = -(sxx + syy + szz) / 3.0
     conj_ωpr = 1.0 - 1.0/conj(λ)^2
     vel      = (κ_loc*ϕ - ω/conj_ωpr*conj(ϕ′) - conj(ψ)) / (2*η_loc) - ν_loc*ε̇zz*ω
+
+    # Velocity gradient
+    ∂v∂z = (κ_loc*Φ - conj(Φ)) / (2*η_loc) - ν_loc*ε̇zz
+    ∂v∂z̄ = -conj(D) / (4*η_loc)
+    ∂v∂x = ∂v∂z + ∂v∂z̄
+    ∂v∂y = im*(∂v∂z - ∂v∂z̄)
+
     return (V   = @SVector([real(vel)/sc, imag(vel)/sc]),
             p   = p,
             τ   = @SMatrix([sxx+p  sxy; sxy  syy+p]),
-            τzz = szz + p)
+            τzz = szz + p,
+            L   = @SMatrix([real(∂v∂x)  real(∂v∂y);
+                            imag(∂v∂x)  imag(∂v∂y)]))
 end
