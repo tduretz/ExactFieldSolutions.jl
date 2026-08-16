@@ -59,12 +59,12 @@ It is necessary to activate the example environment in order to reproduce the vi
 
 ![alt text](img/Wave1D_HeteroPlusSource.svg)
 
-### Stokes 2D
+### Viscous flow/Elasticity 2D (incompressible)
 [Viscous inclusion - Schmid & Podladchikov (2003)](examples/visualisations/Visualize_Stokes2D_Schmid2003.jl)
 
 ![alt text](img/Stokes2D_Schmid2003.svg "Schmid & Podladchikov (2003)")
 
-### Stokes 2D
+### Viscous flow/Elasticity 2D (compressible)
 [Compressible viscous inclusion - Moutzouris & Duretz, (2026):](examples/visualisations/Visualize_Stokes2D_Moutzouris2026.jl)
 
 Builds up on top of Schmid & Podladchikov (2003) and Jeager & Cook book's solution.
