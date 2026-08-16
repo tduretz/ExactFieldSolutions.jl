@@ -1,14 +1,14 @@
 using ExactFieldSolutions, Plots
 
 function main()
-    #Define domain
+    # Define domain
     Nx, Ny  = 200, 200
     xleft, xright = -0.5, 0.5
     ydown, yup    = -0.5, 0.5
     x       = LinRange(xleft,xright,Nx)
     y       = LinRange(ydown,yup, Ny)
 
-    #Allocate arrays
+    # Allocate arrays
     p    = zeros(Nx, Ny)
     Vx   = zeros(Nx, Ny)
     Vy   = zeros(Nx, Ny)
