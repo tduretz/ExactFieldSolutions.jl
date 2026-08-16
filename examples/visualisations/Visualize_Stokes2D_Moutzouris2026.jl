@@ -1,6 +1,11 @@
 using ExactFieldSolutions, Plots
 
 function main()
+    
+    # Choose exact solution
+    elliptical    = true
+    ExactSolution = elliptical ? Stokes2D_Moutzouris_ellipse : Stokes2D_Moutzouris_circle
+
     #Define domain
     Nx, Ny  = 200, 200
     xleft, xright = -0.5, 0.5
@@ -18,8 +23,7 @@ function main()
 
     # Evaluate solution
     for i=1:Nx, j=1:Ny
-        sol       = Stokes2D_Moutzouris_circle( [x[i]; y[j]] )
-        #sol       = Stokes2D_Moutzouris_ellipse( [x[i]; y[j]] )
+        sol       = ExactSolution( [x[i]; y[j]] )
         p[i,j]    = sol.p
         Vx[i,j]   = sol.V[1]
         Vy[i,j]   = sol.V[2]
