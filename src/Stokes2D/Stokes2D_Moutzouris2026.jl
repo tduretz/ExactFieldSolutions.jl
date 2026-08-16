@@ -88,7 +88,7 @@ end
 joukowski(λ) = λ + 1.0/λ          # ω(λ) = z   (change here if your map differs)
 t_to_ri(t) = sqrt((t - 1.0)*(t + 1.0)) / (t - 1.0)
 
-# I need the inverse mapping of the Joukowsky transform
+# Inverse mapping of the Joukowsky transform
 function inv_joukowski(z)
     disc = sqrt(z^2 - 4.0 + 0im)
     ζ1   = (z + disc)/2
@@ -105,7 +105,7 @@ function ellipse_axes(t)
     return a, b
 end
 
-#New analytical solution for ellipse (including OOP)
+# New analytical solution for ellipse (including OOP)
 function Stokes2D_Moutzouris_ellipse(x; 
     params= (ηm=1.0, ηi=0.1, ξm=1.0, ξi=10.0, ri=0.1, t=2.0, α=0.0, ε̇=1.0, γ̇=0.0, ζ̇=0.0, ε̇zz=0.0))
     ηm, ηi, ξm, ξi, ri, t, α, ε̇, γ̇, ζ̇, ε̇zz = params
@@ -127,9 +127,9 @@ function Stokes2D_Moutzouris_ellipse(x;
     P_m     = P_mR + im*P_mI
     Q_m     = (im*γ̇ - 2.0ε̇)*ηm*exp(-2.0*im*α)
     Q_mR    = real(Q_m); Q_mI = imag(Q_m)
-    # radius factor
+    # Radius factor
     r4      = ri^4
-    # out-of-plane forcing of the velocity-continuity condition
+    # Out-of-plane forcing of the velocity-continuity condition
     Δzz     = 2.0*ηi*ηm*ε̇zz*(νm - νi)
     # Solution coefficients
     K       = -2.0*ηi*κm*P_mR + 2.0*ηi*P_mR + 2.0*ηi*Q_mR*ri^2 + 2.0*ηm*κi*P_mR +
@@ -159,7 +159,7 @@ function Stokes2D_Moutzouris_ellipse(x;
     B2      = B2_R + im*B2_I
     λ       = τ + im*σ
     r       = abs(λ)
-    # potentials for matrix and inclusion
+    # Potentials for matrix and inclusion
     if r > ri
         ϕ   =  P_m*(λ + 1.0/λ) + A1/λ
         ϕ′  =  P_m - P_m*λ^-2.0 - A1*λ^-2.0
@@ -175,7 +175,7 @@ function Stokes2D_Moutzouris_ellipse(x;
         ψ′  =  B2 - B2*λ^-2.0
         η_loc, κ_loc, ν_loc, E_loc = ηi, κi, νi, Ei
     end
-    # field formulas
+    # Field formulas
     ω        = λ + 1.0/λ                       # = z (scaled)
     ω′       = 1.0 - λ^-2.0
     ω′′      = 2.0*λ^-3.0

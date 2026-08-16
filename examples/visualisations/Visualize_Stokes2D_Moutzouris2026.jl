@@ -13,7 +13,7 @@ function main()
     x       = LinRange(xleft,xright,Nx)
     y       = LinRange(ydown,yup, Ny)
 
-    #Allocate arrays
+    # Allocate arrays
     p    = zeros(Nx, Ny)
     Vx   = zeros(Nx, Ny)
     Vy   = zeros(Nx, Ny)
