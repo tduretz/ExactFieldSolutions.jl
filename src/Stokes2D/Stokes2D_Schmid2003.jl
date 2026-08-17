@@ -82,7 +82,7 @@ julia> Stokes2D_Schmid2003( (0, 0) )
 (p = 0.0, V = (x = 0.0, y = 0.0), L = (xx = -0.019801980198019802, xy = 0.0, yx = 0.0, yy = 0.019801980198019802), ε̇ = (xx = -0.019801980198019802, xy = 0.0, yx = 0.0, yy = 0.019801980198019802), τ = (xx = -3.9603960396039604, xy = 0.0, yx = 0.0, yy = 3.9603960396039604), η = 100)
 ```
 """
-function Stokes2D_Schmid2003(x;
+function Stokes2D_Schmid2003_circle(x;
     params = (mm = 1.0, mc = 100.0, rc = 0.2, gr = 0.0, er =-1.0) )
     p = Stokes2D_Schmid2003_p(x, params)
     v = Stokes2D_Schmid2003_V(x, params)
@@ -97,14 +97,69 @@ function Stokes2D_Schmid2003(x;
     return (p=p, V=v, L=L, ε̇=ε̇, τ=τ, η=η)
 end
 
-function Stokes2D_Schmid2003(coords::Union{Tuple, NamedTuple};
+function Stokes2D_Schmid2003_circle(coords::Union{Tuple, NamedTuple};
     params = (mm = 1.0, mc = 100.0, rc = 0.2, gr = 0.0, er =-1.0) )
     X = SVector(values(coords)...)
-    sol = Stokes2D_Schmid2003(X; params)
+    sol = Stokes2D_Schmid2003_circle(X; params)
     return (p=sol.p, 
     V=(x=sol.V[1], y=sol.V[2]),
     L=(xx=sol.L[1,1], xy=sol.L[1,2], yx=sol.L[2,1], yy=sol.L[2,2]), 
     ε̇=(xx=sol.ε̇[1,1], xy=sol.ε̇[1,2], yx=sol.ε̇[2,1], yy=sol.ε̇[2,2]), 
     τ=(xx=sol.τ[1,1], xy=sol.τ[1,2], yx=sol.τ[2,1], yy=sol.τ[2,2]),
     η=sol.η) 
+end
+
+function Stokes2D_Schmid2003_ellipse(x; 
+    params= (ηm=1.0, ηi=1000.0, ξm=1.0, ξi=10.0, ri=0.1, t=2.0, α=0.0, ε̇=-0.5, γ̇=0.0, ζ̇=0.0, ε̇zz=0.0))
+    ηm, ηi, ξm, ξi, ri, t, α, ε̇, γ̇, ζ̇, ε̇zz = params
+    mc  = ηi / ηm
+    r1, r2 = ellipse_axes(t)
+    sc     = r2 / ri
+    ri     = t_to_ri(t)
+    Ζ      = to_zeta(sc .* x)      
+    τ, σ   = Ζ[1], Ζ[2]
+    BC = (2.0*ε̇ - im*γ̇)*exp(-2.0*im*α)
+    ReB, ImB = real(BC), imag(BC)
+    B1 = ri^4*mc + ri^4 - 1.0 + mc
+    B2 = ri^4*mc + ri^4 - mc + 1.0
+    B3 = ri^4*mc - mc - ri^4 + 1.0
+    B4 = -ri^4*mc - mc - ri^4 + 1.0
+    B5 = ri^8*mc - mc - ri^8 + 1.0
+    C1 = B3*ri^2*(im*ImB/B1 - ReB/B2)
+    C2 = B5*(im*ImB/B1 - ReB/B2)
+    Bc1 = im*mc*B4*γ̇/(2.0*B1) - ri^2*(mc-1.0)*(im*mc*ImB/B1 - ReB/B2)
+    Bc2 = -2.0*mc*ri^4*(im*ImB/B1 + ReB/B2)
+    λ = τ + im*σ
+    r = abs(λ)
+    if r > ri
+        ϕ   = -im/2*γ̇*(λ + 1.0/λ) + C1/λ
+        ϕ′  = -im/2*γ̇*(1.0 - λ^-2.0) - C1*λ^-2.0
+        ϕ′′ = -im/2*γ̇*(2.0*λ^-3.0) + 2.0*C1*λ^-3.0
+        ψ   = -(ReB + im*ImB)*(λ + 1.0/λ) + C2*(1.0/(λ^3.0 - λ))
+        ψ′  = -(ReB + im*ImB)*(1.0 - λ^-2.0) - C2*(3.0*λ^2 - 1.0)/((λ^3.0 - λ)^2.0)
+        η_loc = ηm
+    else
+        ϕ   = Bc1*(λ + 1.0/λ)
+        ϕ′  = Bc1*(1.0 - λ^-2.0)
+        ϕ′′ = Bc1*(2.0*λ^-3.0)
+        ψ   = Bc2*(λ + 1.0/λ)
+        ψ′  = Bc2*(1.0 - λ^-2.0)
+        η_loc = ηm*mc
+    end
+    ω′  = 1.0 - λ^-2.0
+    ω′′ = 2.0*λ^-3.0
+    zbar = conj(λ) + 1.0/conj(λ)
+    Φp   = (ω′*ϕ′′ - ω′′*ϕ′) / ω′^3
+    S = 4.0*real(ϕ′/ω′)
+    D = 2.0*( zbar*Φp + ψ′/ω′ )
+    sxx = (S - real(D))/2
+    syy = (S + real(D))/2
+    sxy = imag(D)/2
+    p   = -2.0*real(1.0/(1.0 - λ^-2.0)*ϕ′) * ηm
+    conj_ωpr = 1.0 - 1.0/conj(λ)^2
+    vel = (ϕ - (λ + 1.0/λ)/conj_ωpr*conj(ϕ′) - conj(ψ)) / (2.0*η_loc) * ηm
+    return (V   = @SVector([real(vel), imag(vel)]),
+            p   = p,
+            τ   = @SMatrix([sxx*ηm+p  sxy*ηm; sxy*ηm  syy*ηm+p]),
+            τmax = sqrt(((sxx-syy)/2)^2 + sxy^2) * ηm)
 end
