@@ -74,14 +74,14 @@ It is necessary to activate the example environment in order to reproduce the vi
 
 Builds up on top of Schmid & Podladchikov (2003) and Jeager & Cook book's solution.
 
-<img src="img/Stokes2D_Moutzouris2026_circle.png" alt="alt text" width="500">
+<img src="img/Stokes2D_Moutzouris2026_circle.png" alt="alt text">
 
 ### Stokes 2D
 [Compressible viscous inclusion (elliptical) - Moutzouris & Duretz, (2026):](examples/visualisations/Visualize_Stokes2D_Moutzouris2026.jl)
 
 Builds up on top of Schmid & Podladchikov (2003) and Jeager & Cook book's solution.
 
-<img src="img/Stokes2D_Moutzouris2026_ellipse.png" alt="alt text" width="500">
+<img src="img/Stokes2D_Moutzouris2026_ellipse.png" alt="alt text">
 
 [Double corner flow - Moulas et al., (2021)](examples/visualisations/Visualize_Stokes2D_Moulas2021.jl)
 
