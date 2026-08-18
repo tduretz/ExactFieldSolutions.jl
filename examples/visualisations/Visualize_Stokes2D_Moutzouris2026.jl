@@ -3,7 +3,7 @@ using ExactFieldSolutions, Plots
 function main()
     
     # Choose exact solution
-    elliptical    = true
+    elliptical    = false
     ExactSolution = elliptical ? Stokes2D_Moutzouris_ellipse : Stokes2D_Moutzouris_circle
 
     #Define domain
@@ -41,7 +41,11 @@ function main()
     p6 = heatmap(x, y, τxy',  aspect_ratio=1, xlims=(xleft,xright), color=:matter, reverse=true, title="τxy")
     fig = plot(p1, p2, p3, p4, p5, p6, layout=(3,2), size=(600,700))
     display(fig)
-    savefig(fig, "img/Stokes2D_Moutzouris2026.png")
+    if elliptical == true
+        savefig(fig, "img/Stokes2D_Moutzouris2026_ellipse.png")
+    elseif elliptical == false
+        savefig(fig, "img/Stokes2D_Moutzouris2026_circle.png")
+    end
 end
 
 main()

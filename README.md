@@ -60,12 +60,12 @@ It is necessary to activate the example environment in order to reproduce the vi
 ![alt text](img/Wave1D_HeteroPlusSource.svg)
 
 ### Stokes 2D
-[Viscous inclusion (circular) - Schmid & Podladchikov (2003)](examples/visualisations/Visualize_Stokes2D_Schmid2003.jl)
+[Incompressible viscous inclusion (circular) - Schmid & Podladchikov (2003)](examples/visualisations/Visualize_Stokes2D_Schmid2003.jl)
 
 ![alt text](img/Stokes2D_Schmid2003_circle.png "Schmid & Podladchikov (2003)")
 
 ### Stokes 2D
-[Viscous inclusion (elliptical) - Schmid & Podladchikov (2003)](examples/visualisations/Visualize_Stokes2D_Schmid2003.jl)
+[Incompressible viscous inclusion (elliptical) - Schmid & Podladchikov (2003)](examples/visualisations/Visualize_Stokes2D_Schmid2003.jl)
 
 ![alt text](img/Stokes2D_Schmid2003_ellipse.png "Schmid & Podladchikov (2003)")
 
@@ -74,7 +74,7 @@ It is necessary to activate the example environment in order to reproduce the vi
 
 Builds up on top of Schmid & Podladchikov (2003) and Jeager & Cook book's solution.
 
-<img src="img/Stokes2D_Moutzouris2026.png" alt="alt text" width="500">
+<img src="img/Stokes2D_Moutzouris2026_circle.png" alt="alt text" width="500">
 
 ### Stokes 2D
 [Compressible viscous inclusion (elliptical) - Moutzouris & Duretz, (2026):](examples/visualisations/Visualize_Stokes2D_Moutzouris2026.jl)

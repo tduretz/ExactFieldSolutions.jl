@@ -29,3 +29,27 @@ end
     @test all(sol.τ .≈ τ)
     @test sol.τzz  ≈ τzz
 end
+
+@testset "far-field" begin
+    for prm in ((ηm=1.0, ηi=0.1,  ξm=1.0, ξi=10.0, ri=0.1, t=2.0, α=0.0, ε̇=1.0,  γ̇=0.0, ζ̇=0.0,  ε̇zz=0.0),
+                (ηm=1.0, ηi=10.0, ξm=1.0, ξi=0.5,  ri=0.1, t=2.0, α=0.0, ε̇=0.3,  γ̇=1.5, ζ̇=0.2,  ε̇zz=0.0),
+                (ηm=2.0, ηi=0.05, ξm=3.0, ξi=1.0,  ri=0.1, t=2.0, α=0.0, ε̇=-0.5, γ̇=0.7, ζ̇=-0.1, ε̇zz=0.4))
+        L∞ = [prm.ζ̇+prm.ε̇  prm.γ̇; 0.0  prm.ζ̇-prm.ε̇]
+        for x in ([100.0, 0.0], [0.0, 100.0], [70.0, -70.0])
+            sol = Stokes2D_Moutzouris_circle(x; params=prm)
+            @test sol.L ≈ L∞          rtol=1e-5
+            @test sol.V ≈ L∞*x        rtol=1e-5
+        end
+    end
+end
+
+@testset "incompressible limit" begin
+    prm = (ηm=1.0, ηi=100.0, ξm=1e8, ξi=1e8, ri=0.2, t=2.0, α=0.0, ε̇=-1.0, γ̇=0.0, ζ̇=0.0, ε̇zz=0.0)
+    for x in ([0.1,0.05], [0.5,0.3], [1.0,-0.7])
+        m = Stokes2D_Moutzouris_ellipse(x; params=prm)
+        s = Stokes2D_Schmid2003_ellipse(x; params=prm)
+        @test m.V ≈ s.V  rtol=1e-6
+        @test m.p ≈ s.p  rtol=1e-6
+        @test m.τ ≈ s.τ  rtol=1e-6
+    end
+end

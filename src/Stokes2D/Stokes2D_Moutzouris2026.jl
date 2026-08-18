@@ -28,7 +28,7 @@ julia> Stokes2D_Moutzouris_circle( (0.2, 0.5) )
 # New analytical solution for circle (including OOP)
 function Stokes2D_Moutzouris_circle(x; 
     params = (ηm=1.0, ηi=0.1, ξm=1.0, ξi=10.0, ri=0.1, t=2.0, α=0.0, ε̇=1.0, γ̇=0.0, ζ̇=0.0, ε̇zz=0.0))
-    ηm, ηi, ξm, ξi, ri, t, α, ε̇, γ̇, ζ̇, ε̇zz = params
+    @unpack ηm, ηi, ξm, ξi, ri, t, α, ε̇, γ̇, ζ̇, ε̇zz = params
     x, y = x[1], x[2]
     r1, r2, sc = ri, ri, 1.0
     νm = (3ξm - 2ηm) / (2*(3ξm + ηm))
@@ -115,7 +115,7 @@ end
 # New analytical solution for ellipse (including OOP)
 function Stokes2D_Moutzouris_ellipse(x; 
     params= (ηm=1.0, ηi=0.1, ξm=1.0, ξi=10.0, ri=0.1, t=2.0, α=0.0, ε̇=1.0, γ̇=0.0, ζ̇=0.0, ε̇zz=0.0))
-    ηm, ηi, ξm, ξi, ri, t, α, ε̇, γ̇, ζ̇, ε̇zz = params
+    @unpack ηm, ηi, ξm, ξi, ri, t, α, ε̇, γ̇, ζ̇, ε̇zz = params
     r1, r2     = ellipse_axes(t) # true physical semi-axes (a >= 2 always)
     sc         = r2 / ri 
     ri      = t_to_ri(t)

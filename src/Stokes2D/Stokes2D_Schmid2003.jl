@@ -62,7 +62,9 @@ function Stokes2D_Schmid2003_L(x, params) # just to check if automatic derivativ
 end
 
 @doc raw"""
-    sol = Stokes2D_Schmid2003(x; params)  
+    sol = Stokes2D_Schmid2003_circle(x; params)  
+    or
+    sol = Stokes2D_Schmid2003_ellipse(x; params)
 
 Evaluates the analytical solution of [Schmid & Podladchikov (2003)](https://academic.oup.com/gji/article/155/1/269/713923):
 
@@ -74,11 +76,11 @@ and returns:
 
 # Examples
 ```julia-repl
-julia> Stokes2D_Schmid2003( [0, 0] )
+julia> Stokes2D_Schmid2003_circle( [0, 0] )
 (p = 0.0, V = [0.0, 0.0], L = [-0.019801980198019802 0.0; 0.0 0.019801980198019802], ε̇ = [-0.019801980198019802 0.0; 0.0 0.019801980198019802], τ = [-3.9603960396039604 0.0; 0.0 3.9603960396039604])
 ```
 ```julia-repl
-julia> Stokes2D_Schmid2003( (0, 0) )
+julia> Stokes2D_Schmid2003_ellipse( (0, 0) )
 (p = 0.0, V = (x = 0.0, y = 0.0), L = (xx = -0.019801980198019802, xy = 0.0, yx = 0.0, yy = 0.019801980198019802), ε̇ = (xx = -0.019801980198019802, xy = 0.0, yx = 0.0, yy = 0.019801980198019802), τ = (xx = -3.9603960396039604, xy = 0.0, yx = 0.0, yy = 3.9603960396039604), η = 100)
 ```
 """
@@ -110,8 +112,8 @@ function Stokes2D_Schmid2003_circle(coords::Union{Tuple, NamedTuple};
 end
 
 function Stokes2D_Schmid2003_ellipse(x; 
-    params= (ηm=1.0, ηi=1000.0, ξm=1.0, ξi=10.0, ri=0.1, t=2.0, α=0.0, ε̇=-0.5, γ̇=0.0, ζ̇=0.0, ε̇zz=0.0))
-    ηm, ηi, ξm, ξi, ri, t, α, ε̇, γ̇, ζ̇, ε̇zz = params
+     params= (ηm=1.0, ηi=1000.0, ξm=1.0, ξi=10.0, ri=0.1, t=2.0, α=0.0, ε̇=-0.5, γ̇=0.0, ζ̇=0.0, ε̇zz=0.0))
+    @unpack ηm, ηi, ξm, ξi, ri, t, α, ε̇, γ̇, ζ̇, ε̇zz = params
     mc  = ηi / ηm
     r1, r2 = ellipse_axes(t)
     sc     = r2 / ri
@@ -158,7 +160,7 @@ function Stokes2D_Schmid2003_ellipse(x;
     p   = -2.0*real(1.0/(1.0 - λ^-2.0)*ϕ′) * ηm
     conj_ωpr = 1.0 - 1.0/conj(λ)^2
     vel = (ϕ - (λ + 1.0/λ)/conj_ωpr*conj(ϕ′) - conj(ψ)) / (2.0*η_loc) * ηm
-    return (V   = @SVector([real(vel), imag(vel)]),
+    return (V   = @SVector([real(vel)/sc, imag(vel)/sc]),
             p   = p,
             τ   = @SMatrix([sxx*ηm+p  sxy*ηm; sxy*ηm  syy*ηm+p]),
             τmax = sqrt(((sxx-syy)/2)^2 + sxy^2) * ηm)
