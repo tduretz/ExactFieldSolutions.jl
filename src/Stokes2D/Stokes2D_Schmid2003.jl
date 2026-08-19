@@ -1,5 +1,5 @@
 function Stokes2D_Schmid2003_p(x, params)
-    @unpack mm, mc, rc, gr, er  = params
+    (; mm, mc, rc, gr, er) = params
     # Check position
     (x[1]^2 + x[2]^2) < rc^2 ? in=true : in=false
     # Outside
@@ -12,7 +12,7 @@ function Stokes2D_Schmid2003_p(x, params)
 end
 
 function Stokes2D_Schmid2003_V(x, params)
-    @unpack mm, mc, rc, gr, er  = params
+    (; mm, mc, rc, gr, er) = params
     xi, yi = x[1], x[2]
   
     # Check position
@@ -37,8 +37,8 @@ function Stokes2D_Schmid2003_V(x, params)
 end
  
 function Stokes2D_Schmid2003_L(x, params) # just to check if automatic derivatives are correct
-    @unpack mm, mc, rc, gr, er  = params
-    xi, yi = x[1], yi
+    (; mm, mc, rc, gr, er) = params
+    xi, yi = x[1], x[2]
 
     # Check position
     isinside = (xi^2 + yi^2) < rc^2 
@@ -113,7 +113,7 @@ end
 
 function Stokes2D_Schmid2003_ellipse(x; 
      params= (ηm=1.0, ηi=1000.0, ξm=1.0, ξi=10.0, ri=0.1, t=2.0, α=0.0, ε̇=-0.5, γ̇=0.0, ζ̇=0.0, ε̇zz=0.0))
-    @unpack ηm, ηi, ξm, ξi, ri, t, α, ε̇, γ̇, ζ̇, ε̇zz = params
+    (; ηm, ηi, ξm, ξi, ri, t, α, ε̇, γ̇, ζ̇, ε̇zz) = params
     mc  = ηi / ηm
     r1, r2 = ellipse_axes(t)
     sc     = r2 / ri

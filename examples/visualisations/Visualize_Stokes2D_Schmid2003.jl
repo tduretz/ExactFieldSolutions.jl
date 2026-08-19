@@ -42,11 +42,8 @@ function main()
     p6 = heatmap(x, y, τxy',  aspect_ratio=1, xlims=(xleft,xright), color=:matter, reverse=true, title="τxy")
     fig = plot(p1, p2, p3, p4, p5, p6, layout=(3,2), size=(600,700))
     display(fig)
-    if elliptical == true
-        savefig(fig, "img/Stokes2D_Schmid2003_ellipse.png")
-    elseif elliptical == false
-        savefig(fig, "img/Stokes2D_Schmid2003_circle.png")
-    end
+    str = elliptical ? "ellipse" : "circle" 
+    savefig(fig, "img/Stokes2D_Moutzouris2026_" * str * ".png")
 end
 
 main()
